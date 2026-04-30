@@ -1,4 +1,4 @@
-const CACHE_NAME = 'snackkribo-v2.0';
+const CACHE_NAME = 'snackkribo-v3.0';
 const ASSETS = [
   '/',
   '/index.html',
