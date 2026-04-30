@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#E91E8C"/>
+  <meta name="description" content="Snack Kribo - Kripik Istimewa Bro! Keripik pisang premium rasa Cokelat, Matcha, Vanila & Strawberry. 100% pisang pilihan, tanpa pengawet!"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Snack Kribo"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="icon" href="/images/logo-kribo.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="/images/logo-kribo.png"/>
+  <title>Snack Kribo - Kripik Istimewa Bro!</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="/css/landing.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <img src="/images/logo-kribo.png" id="navLogo" alt="Kribo" onerror="this.style.display='none'"/>
+    <div id="navStoreName">SNACK <span>KRIBO</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#beranda">Beranda</a></li>
+    <li><a href="#produk">Produk</a></li>
+    <li><a href="#tentang">Tentang</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+    <li><a href="#affiliate">Affiliate</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="/login.html">Masuk</a>
+    <a href="/shop.html" style="background:var(--brand);color:#fff;padding:8px 20px;border-radius:4px;">Belanja</a>
+  </div>
+  <button class="mobile-toggle" onclick="toggleMobile()">☰</button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button onclick="toggleMobile()" style="align-self:flex-end;background:none;border:none;font-size:1.5rem;cursor:pointer;margin-bottom:20px">&times;</button>
+  <a href="#beranda" onclick="toggleMobile()">Beranda</a>
+  <a href="#tentang" onclick="toggleMobile()">Tentang Kami</a>
+  <a href="#produk" onclick="toggleMobile()">Menu</a>
+  <a href="#testimoni" onclick="toggleMobile()">Testimoni</a>
+  <a href="/login.html" onclick="toggleMobile()">Masuk</a>
+  <a href="/shop.html" onclick="toggleMobile()">Belanja</a>
+</div>
+
+<!-- HERO SLIDER -->
+<section class="hero-slider" id="beranda">
+  <div class="swiper heroSwiper">
+    <div class="swiper-wrapper" id="heroSliderWrap">
+      <div class="swiper-slide">
+        <img src="/images/logo-kribo.png" alt="Promo 1"/>
+      </div>
+      <div class="swiper-slide">
+        <img src="/images/logo-kribo.png" alt="Promo 2"/>
+      </div>
+      <div class="swiper-slide">
+        <img src="/images/logo-kribo.png" alt="Promo 3"/>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+
+<!-- ABOUT / DISCOVER -->
+<section class="section about-section" id="tentang">
+  <div class="about-image">
+    <img id="aboutImage" src="/images/logo-kribo.png" alt="Discover" onerror="this.outerHTML='<div style=\'width:100%;height:400px;background:#eee;display:flex;align-items:center;justify-content:center;border-radius:8px\'>Gambar Tentang Kami</div>'"/>
+  </div>
+  <div class="about-text">
+    <div id="aboutTitleDesc">
+      <h2>Discover the taste of our authentic flavour!</h2>
+      <p>Memuat deskripsi...</p>
+    </div>
+    <a href="/shop.html" class="btn-outline-brand">Learn More</a>
+  </div>
+</section>
+
+<!-- PRODUCTS / MENU -->
+<section class="section products-section" id="produk">
+  <h2 class="section-title">OUR PRODUCT</h2>
+  <div class="products-grid" id="landingProductsGrid">
+    <div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">⏳ Memuat produk...</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimoni" style="background:#FFF;">
+  <h2 class="section-title">TESTIMONIALS</h2>
+  <div class="testi-grid" id="landingTestiGrid">
+    <div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">⏳ Memuat testimoni...</div>
+  </div>
+</section>
+
+<!-- AFFILIATE CTA -->
+<section class="affiliate-section" id="affiliate">
+  <div class="affiliate-banner">
+    <div class="affiliate-banner-content">
+      <h2>JADI PARTNER KAMI, <span style="color:#FFD93D;">RAIH CUAN</span> TIAP HARI! 💸</h2>
+      <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto 30px; line-height: 1.8;">
+        Yuk gabung program <strong>Affiliate Snack Kribo</strong>! Cukup bagikan link referalmu, rebahan di rumah, dan nikmati komisi dari setiap produk yang terjual. Tanpa modal, tanpa pusing urus stok, cuan ngalir terus!
+      </p>
+      <a href="/login.html?mode=affiliate" class="btn-affiliate-large">Gabung Sekarang — Gratis!</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3 id="footerStoreName">SNACK <span>KRIBO</span></h3>
+      <p id="footerDesc">Keripik pisang premium dengan varian rasa yang bikin nagih. 100% pilihan terbaik, tanpa pengawet.</p>
+      <a href="https://wa.me/6281234567890" target="_blank" class="footer-wa" id="footerWA">💬 Chat via WhatsApp</a>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <a href="#beranda">Beranda</a>
+      <a href="#produk">Produk</a>
+      <a href="#tentang">Tentang Kami</a>
+      <a href="#testimoni">Testimoni</a>
+    </div>
+    <div class="footer-col">
+      <h4>Layanan</h4>
+      <a href="/shop.html">Belanja Online</a>
+      <a href="/login.html">Masuk / Daftar</a>
+      <a href="/affiliate.html">Program Affiliate</a>
+    </div>
+    <div class="footer-col">
+      <h4>Kontak</h4>
+      <a href="https://wa.me/6281234567890">📱 +62 812-3456-7890</a>
+      <a href="#">📍 Indonesia</a>
+      <a href="#">📧 info@snackkribo.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom" id="footerCopy">
+    © 2026 Snack Kribo. All rights reserved.
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script type="module">
+import '/js/data.js';
+
+// Init Swiper
+let heroSwiper;
+
+// Scroll & UI Logic
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+window.toggleMobile = function() { document.getElementById('mobileMenu').classList.toggle('open'); };
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); toggleMobile(); }
+  });
+});
+
+// Render Dynamic Content
+async function renderLanding() {
+  try {
+    await DB.init();
+    const s = await DB.getSettings();
+    const l = await DB.getLanding();
+    const products = await DB.getProducts();
+
+    // Settings
+    if(s.logoUrl) document.getElementById('navLogo').src = CLOUDINARY.thumb(s.logoUrl, 100);
+    else document.getElementById('navLogo').outerHTML = `<span style="font-size:1.8rem;margin-right:8px">${s.logoEmoji||'🍌'}</span>`;
+    
+    document.getElementById('navStoreName').innerHTML = s.storeName.toUpperCase();
+    document.getElementById('footerStoreName').innerHTML = s.storeName.toUpperCase();
+    document.getElementById('footerWA').href = `https://wa.me/${s.whatsapp}`;
+    document.getElementById('footerCopy').innerHTML = `© ${new Date().getFullYear()} ${s.storeName}. All rights reserved.`;
+
+    document.documentElement.style.setProperty('--brand', s.primaryColor || '#9C1A2E');
+
+    // Hero Slider
+    const heroWrap = document.getElementById('heroSliderWrap');
+    if (l.hero.imageUrl) {
+      const img1 = CLOUDINARY.thumb(l.hero.imageUrl, 1200);
+      // For demo of slider, we create 3 identical slides or different ones if user adds them.
+      // Currently using the same uploaded image across 3 slides.
+      heroWrap.innerHTML = `
+        <div class="swiper-slide"><img src="${img1}" alt="Banner 1" /></div>
+        <div class="swiper-slide"><img src="${img1}" alt="Banner 2" style="filter: brightness(0.9) contrast(1.1);"/></div>
+        <div class="swiper-slide"><img src="${img1}" alt="Banner 3" style="filter: hue-rotate(15deg);"/></div>
+      `;
+    }
+    
+    // Initialize Swiper after injecting slides
+    heroSwiper = new Swiper('.heroSwiper', {
+      loop: true,
+      autoplay: { delay: 3000, disableOnInteraction: false },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      speed: 800,
+      effect: 'fade',
+      fadeEffect: { crossFade: true }
+    });
+
+    // Products
+    const actProducts = products.filter(p => p.active).slice(0, 4);
+    const prodGrid = document.getElementById('landingProductsGrid');
+    if(actProducts.length) {
+      prodGrid.innerHTML = actProducts.map((p, i) => {
+        const imgHtml = p.imageUrl 
+          ? `<img src="${CLOUDINARY.thumb(p.imageUrl, 400)}" alt="${p.name}"/>`
+          : `<div style="font-size:5rem">${p.emoji}</div>`;
+        return `
+        <div class="product-card">
+          <div class="product-img-wrap">
+            ${imgHtml}
+          </div>
+          <h3 class="product-name">${p.name}</h3>
+          <div class="product-price">${DB.formatRupiah(p.price)}</div>
+          <a href="/shop.html" class="btn-buy-card">Order</a>
+        </div>`;
+      }).join('');
+    } else {
+      prodGrid.innerHTML = `<div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">Belum ada produk</div>`;
+    }
+
+    // About
+    if(l.about.imageUrl) {
+      const abImg = document.getElementById('aboutImage');
+      abImg.src = CLOUDINARY.thumb(l.about.imageUrl, 800);
+    }
+    document.getElementById('aboutTitleDesc').innerHTML = `
+      ${l.about.titleHtml ? `<h2>${l.about.titleHtml}</h2>` : ''}
+      ${l.about.descHtml}
+    `;
+
+    // Testimonials
+    const testiGrid = document.getElementById('landingTestiGrid');
+    testiGrid.innerHTML = l.testimonials.map((t, i) => `
+      <div style="background:#F5F5F5;padding:20px;border-radius:8px;text-align:center;">
+        <div style="color:#FFD93D;font-size:1.2rem;margin-bottom:10px">${'★'.repeat(t.rating)}</div>
+        <p style="font-style:italic;color:var(--text-dim);margin-bottom:15px">"${t.text}"</p>
+        <p style="font-weight:700;">${t.name}</p>
+        <p style="font-size:0.8rem;color:var(--text-dim)">${t.loc}</p>
+      </div>`).join('');
+
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+    document.getElementById('footerCopyName').textContent = s.storeName;
+
+  } catch(e) { console.error('Error rendering landing:', e); }
+}
+
+document.addEventListener('DOMContentLoaded', renderLanding);
+</script>
+</body>
+</html>

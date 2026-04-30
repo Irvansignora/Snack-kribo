@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#E91E8C"/>
+  <link rel="icon" href="/images/logo-kribo.png" type="image/png"/>
+  <title>Affiliate Dashboard - Snack Kribo</title>
+  <link rel="stylesheet" href="/css/landing.css"/>
+  <style>
+    body { background:var(--dark); min-height:100vh; }
+    .aff-nav {
+      position:sticky; top:0; z-index:100; padding:14px 24px;
+      background:rgba(10,10,20,0.95); backdrop-filter:blur(20px);
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--glass2);
+    }
+    .aff-nav-brand { display:flex; align-items:center; gap:10px; font-weight:900; font-size:1.1rem; }
+    .aff-nav-brand span { color:var(--pink); }
+    .aff-nav-right { display:flex; gap:10px; align-items:center; }
+    .aff-user { font-size:0.85rem; color:var(--white2); font-weight:600; }
+    .btn-out {
+      padding:8px 16px; border-radius:10px; border:1.5px solid var(--glass2);
+      background:transparent; color:var(--white3); font-family:var(--font);
+      font-weight:700; font-size:0.8rem; cursor:pointer; transition:all 0.3s;
+    }
+    .btn-out:hover { border-color:var(--pink); color:var(--pink); }
+    .aff-content { max-width:1000px; margin:0 auto; padding:24px 20px 60px; }
+    .aff-welcome {
+      background:linear-gradient(135deg, var(--dark3), var(--dark4));
+      border:1px solid var(--glass2); border-radius:20px;
+      padding:32px; margin-bottom:24px; position:relative; overflow:hidden;
+    }
+    .aff-welcome::before {
+      content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px;
+      background:radial-gradient(circle, var(--pink-glow), transparent 70%);
+      border-radius:50%; filter:blur(60px);
+    }
+    .aff-welcome h1 { font-size:1.6rem; font-weight:900; margin-bottom:8px; position:relative; z-index:1; }
+    .aff-welcome p { color:var(--white3); font-size:0.92rem; position:relative; z-index:1; }
+    .aff-pending {
+      background:rgba(255,217,61,0.1); border:1px solid rgba(255,217,61,0.3);
+      border-radius:16px; padding:24px; text-align:center; margin-bottom:24px;
+    }
+    .aff-pending h2 { font-size:1.2rem; color:var(--gold); margin-bottom:8px; }
+    .aff-pending p { color:var(--white3); font-size:0.88rem; }
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .stat-box {
+      background:var(--dark3); border:1px solid var(--glass2); border-radius:16px;
+      padding:24px 20px; text-align:center; transition:all 0.3s;
+    }
+    .stat-box:hover { border-color:var(--pink); transform:translateY(-2px); }
+    .stat-icon { font-size:1.8rem; margin-bottom:8px; }
+    .stat-value { font-size:1.8rem; font-weight:900; margin-bottom:4px; }
+    .stat-value.pink { color:var(--pink); }
+    .stat-value.gold { color:var(--gold); }
+    .stat-value.green { color:var(--green); }
+    .stat-label { font-size:0.78rem; color:var(--white3); font-weight:600; }
+    .aff-card {
+      background:var(--dark3); border:1px solid var(--glass2); border-radius:20px;
+      padding:28px; margin-bottom:20px;
+    }
+    .aff-card h2 { font-size:1.1rem; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .ref-link-box {
+      display:flex; gap:10px; align-items:center; background:var(--dark4);
+      border-radius:14px; padding:14px 18px; margin-bottom:16px;
+    }
+    .ref-link-box input {
+      flex:1; background:transparent; border:none; color:var(--white);
+      font-family:var(--font); font-size:0.88rem; font-weight:600; outline:none;
+    }
+    .btn-copy {
+      padding:10px 20px; border-radius:12px; border:none;
+      background:var(--pink); color:var(--white); font-family:var(--font);
+      font-weight:700; font-size:0.82rem; cursor:pointer; transition:all 0.3s; white-space:nowrap;
+    }
+    .btn-copy:hover { background:var(--pink-light); }
+    .share-btns { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn-share {
+      padding:10px 20px; border-radius:12px; border:none;
+      font-family:var(--font); font-weight:700; font-size:0.82rem;
+      cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:6px;
+    }
+    .btn-wa-share { background:#25D366; color:#fff; }
+    .btn-tg-share { background:#0088CC; color:#fff; }
+    .btn-tw-share { background:#1DA1F2; color:#fff; }
+    .btn-share:hover { transform:translateY(-2px); }
+    .orders-table { width:100%; border-collapse:collapse; }
+    .orders-table th {
+      font-size:0.72rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:0.5px; color:var(--white3); padding:10px 12px;
+      border-bottom:1px solid var(--glass2); text-align:left;
+    }
+    .orders-table td {
+      padding:12px; font-size:0.85rem; border-bottom:1px solid var(--glass2);
+      color:var(--white2);
+    }
+    .orders-table tr:hover td { background:rgba(255,255,255,0.02); }
+    .commission-badge {
+      display:inline-block; padding:4px 12px; border-radius:20px;
+      font-size:0.75rem; font-weight:800;
+      background:rgba(34,197,94,0.15); color:var(--green);
+    }
+    .empty-orders { text-align:center; padding:40px; color:var(--white3); }
+    .empty-orders .emoji { font-size:3rem; margin-bottom:12px; }
+    @media (max-width:768px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .aff-content { padding:16px 14px 60px; }
+      .stat-value { font-size:1.3rem; }
+      .aff-nav { padding:12px 16px; }
+      .aff-nav-right { gap:6px; }
+      .aff-user { display:none; }
+    }
+    @media (max-width:480px) {
+      .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
+      .ref-link-box { flex-direction:column; }
+      .share-btns { flex-direction:column; }
+      .btn-share { justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="aff-nav">
+  <div class="aff-nav-brand">
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+      🍌 SNACK <span>KRIBO</span>
+    </a>
+  </div>
+  <div class="aff-nav-right">
+    <span class="aff-user" id="affUserName">Loading...</span>
+    <a href="/shop.html" class="btn-out">🛒 Toko</a>
+    <button class="btn-out" onclick="handleLogout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="aff-content" id="affContent">
+  <div style="text-align:center;padding:60px;color:var(--white3)">
+    <div style="font-size:2rem;margin-bottom:12px">⏳</div>
+    <p>Memuat dashboard...</p>
+  </div>
+</div>
+
+<script type="module">
+import '/js/data.js';
+
+let currentUser = null;
+let userData = null;
+
+async function initAffiliate() {
+  try {
+    await DB.init();
+    currentUser = DB.getCurrentUser();
+    if (!currentUser) { window.location.href = '/login.html'; return; }
+    userData = await DB.getUserData(currentUser.uid);
+    if (!userData || !userData.isAffiliate) {
+      window.location.href = '/shop.html'; return;
+    }
+    document.getElementById('affUserName').textContent = userData.name || currentUser.email;
+    renderDashboard();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('affContent').innerHTML = `<div style="text-align:center;padding:60px;color:#FCA5A5">
+      <div style="font-size:2rem;margin-bottom:12px">❌</div><p>Gagal memuat. Cek koneksi internet.</p>
+      <a href="/login.html" style="color:var(--pink);margin-top:12px;display:inline-block">← Kembali ke Login</a>
+    </div>`;
+  }
+}
+
+async function renderDashboard() {
+  const content = document.getElementById('affContent');
+  const settings = await DB.getSettings();
+  const commRate = settings.affiliateCommission || 10;
+
+  if (!userData.affiliateApproved) {
+    content.innerHTML = `
+      <div class="aff-welcome">
+        <h1>Halo, ${userData.name}! 👋</h1>
+        <p>Selamat datang di Program Affiliate Snack Kribo</p>
+      </div>
+      <div class="aff-pending">
+        <div style="font-size:3rem;margin-bottom:12px">⏳</div>
+        <h2>Menunggu Persetujuan Admin</h2>
+        <p>Pendaftaran affiliate kamu sedang ditinjau. Kamu akan mendapat akses penuh setelah disetujui oleh admin.</p>
+        <p style="margin-top:12px;font-size:0.82rem">Kode Affiliate: <strong style="color:var(--gold)">${userData.affiliateCode}</strong></p>
+      </div>`;
+    return;
+  }
+
+  // Get affiliate orders
+  let affOrders = [];
+  try { affOrders = await DB.getAffiliateOrders(userData.affiliateCode); } catch(e) {}
+  const completedOrders = affOrders.filter(o => o.status !== 'cancel');
+  const totalSales = userData.totalSales || 0;
+  const totalCommission = userData.totalCommission || 0;
+  const pendingPayout = userData.pendingPayout || 0;
+  const shopUrl = window.location.origin + '/shop.html?ref=' + userData.affiliateCode;
+
+  content.innerHTML = `
+    <div class="aff-welcome">
+      <h1>Halo, ${userData.name}! 👋</h1>
+      <p>Dashboard Affiliate — Komisi ${commRate}% dari setiap penjualan melalui link referral kamu.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value pink">${completedOrders.length}</div>
+        <div class="stat-label">Total Pesanan</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value gold">${DB.formatRupiah(totalSales)}</div>
+        <div class="stat-label">Total Penjualan</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">💸</div>
+        <div class="stat-value green">${DB.formatRupiah(totalCommission)}</div>
+        <div class="stat-label">Total Komisi</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🏦</div>
+        <div class="stat-value gold">${DB.formatRupiah(pendingPayout)}</div>
+        <div class="stat-label">Belum Dicairkan</div>
+      </div>
+    </div>
+
+    <div class="aff-card">
+      <h2>🔗 Link Referral Kamu</h2>
+      <div class="ref-link-box">
+        <input type="text" id="refLinkInput" value="${shopUrl}" readonly/>
+        <button class="btn-copy" onclick="copyRefLink()">📋 Salin</button>
+      </div>
+      <p style="font-size:0.82rem;color:var(--white3);margin-bottom:16px">
+        Kode: <strong style="color:var(--gold)">${userData.affiliateCode}</strong> • 
+        Komisi: <strong style="color:var(--green)">${commRate}%</strong> per transaksi
+      </p>
+      <div class="share-btns">
+        <button class="btn-share btn-wa-share" onclick="shareWA()">💬 WhatsApp</button>
+        <button class="btn-share btn-tg-share" onclick="shareTG()">📨 Telegram</button>
+        <button class="btn-share btn-tw-share" onclick="shareTW()">🐦 Twitter/X</button>
+      </div>
+    </div>
+
+    <div class="aff-card">
+      <h2>📦 Riwayat Pesanan Referral</h2>
+      ${completedOrders.length ? `
+        <div style="overflow-x:auto">
+          <table class="orders-table">
+            <thead><tr><th>Order ID</th><th>Tanggal</th><th>Total</th><th>Komisi</th><th>Status</th></tr></thead>
+            <tbody>
+              ${completedOrders.map(o => {
+                const comm = Math.floor(o.total * commRate / 100);
+                const statusLabel = {pending:'⏳',process:'⚙️',delivery:'🛵',done:'✅',cancel:'❌'};
+                return `<tr>
+                  <td><strong>${o.id}</strong></td>
+                  <td>${DB.formatDate(o.createdAt)}</td>
+                  <td>${DB.formatRupiah(o.total)}</td>
+                  <td><span class="commission-badge">+${DB.formatRupiah(comm)}</span></td>
+                  <td>${statusLabel[o.status]||o.status}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : `
+        <div class="empty-orders">
+          <div class="emoji">📭</div>
+          <p>Belum ada pesanan melalui link referral kamu</p>
+          <p style="font-size:0.82rem;margin-top:8px">Bagikan link referral di atas untuk mulai mendapatkan komisi!</p>
+        </div>
+      `}
+    </div>`;
+}
+
+window.copyRefLink = function() {
+  const input = document.getElementById('refLinkInput');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = input.nextElementSibling;
+    btn.textContent = '✅ Tersalin!';
+    setTimeout(() => { btn.textContent = '📋 Salin'; }, 2000);
+  });
+};
+
+window.shareWA = function() {
+  const url = document.getElementById('refLinkInput').value;
+  const text = encodeURIComponent(`🍌 Cobain Snack Kribo — Keripik pisang premium yang bikin nagih! Pesan di sini: ${url}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+};
+
+window.shareTG = function() {
+  const url = document.getElementById('refLinkInput').value;
+  const text = encodeURIComponent('🍌 Cobain Snack Kribo — Keripik pisang premium yang bikin nagih!');
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
+};
+
+window.shareTW = function() {
+  const url = document.getElementById('refLinkInput').value;
+  const text = encodeURIComponent(`🍌 Cobain Snack Kribo — Keripik pisang premium! ${url}`);
+  window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+};
+
+window.handleLogout = async function() {
+  try { await DB.logout(); } catch(e) {}
+  window.location.href = '/login.html';
+};
+
+initAffiliate();
+</script>
+</body>
+</html>

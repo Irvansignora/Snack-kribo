@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#E91E8C"/>
+  <link rel="icon" href="/images/logo-kribo.png" type="image/png"/>
+  <title>Masuk - Snack Kribo</title>
+  <link rel="stylesheet" href="/css/landing.css"/>
+  <style>
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:var(--dark); }
+    .auth-container { width:100%; max-width:440px; }
+    .auth-card {
+      background:var(--dark3); border:1px solid var(--glass2); border-radius:24px;
+      padding:40px 32px; backdrop-filter:blur(20px); position:relative; overflow:hidden;
+    }
+    .auth-card::before {
+      content:''; position:absolute; top:-80px; right:-80px; width:200px; height:200px;
+      background:radial-gradient(circle, var(--pink-glow), transparent 70%);
+      border-radius:50%; filter:blur(60px);
+    }
+    .auth-logo { text-align:center; margin-bottom:28px; position:relative; z-index:1; }
+    .auth-logo img { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; display:block; object-fit:cover; }
+    .auth-logo h1 { font-size:1.6rem; font-weight:900; }
+    .auth-logo h1 span { color:var(--pink); }
+    .auth-logo p { font-size:0.85rem; color:var(--white3); margin-top:4px; }
+    .auth-tabs { display:flex; gap:4px; background:var(--dark4); border-radius:14px; padding:4px; margin-bottom:28px; position:relative; z-index:1; }
+    .auth-tab {
+      flex:1; padding:12px; text-align:center; border-radius:12px; border:none;
+      background:transparent; color:var(--white3); font-family:var(--font);
+      font-weight:700; font-size:0.88rem; cursor:pointer; transition:all 0.3s;
+    }
+    .auth-tab.active { background:var(--pink); color:var(--white); }
+    .auth-form { position:relative; z-index:1; }
+    .auth-form[style*="display:none"] { display:none!important; }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:0.8rem; font-weight:700; color:var(--white2); margin-bottom:6px; }
+    .form-input {
+      width:100%; padding:14px 16px; border-radius:14px;
+      border:2px solid var(--glass2); background:var(--dark4);
+      color:var(--white); font-family:var(--font); font-size:0.92rem;
+      outline:none; transition:border-color 0.3s;
+    }
+    .form-input:focus { border-color:var(--pink); }
+    .form-input::placeholder { color:var(--white3); }
+    .affiliate-toggle {
+      display:flex; align-items:center; gap:12px; padding:14px 16px;
+      background:var(--dark4); border-radius:14px; margin-bottom:16px; cursor:pointer;
+      border:2px solid var(--glass2); transition:border-color 0.3s;
+    }
+    .affiliate-toggle.active { border-color:var(--gold); }
+    .aff-check {
+      width:22px; height:22px; border-radius:6px; border:2px solid var(--glass2);
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+      transition:all 0.3s; font-size:0.8rem;
+    }
+    .affiliate-toggle.active .aff-check { background:var(--gold); border-color:var(--gold); color:var(--dark); }
+    .aff-text { flex:1; }
+    .aff-text strong { font-size:0.88rem; display:block; margin-bottom:2px; }
+    .aff-text span { font-size:0.75rem; color:var(--white3); }
+    .btn-auth {
+      width:100%; padding:16px; border-radius:14px; border:none;
+      background:linear-gradient(135deg, var(--pink), var(--pink-dark));
+      color:var(--white); font-family:var(--font); font-weight:800;
+      font-size:1rem; cursor:pointer; transition:all 0.3s;
+      box-shadow:0 8px 30px var(--pink-glow);
+    }
+    .btn-auth:hover { transform:translateY(-2px); }
+    .btn-auth:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+    .auth-divider { text-align:center; margin:20px 0; color:var(--white3); font-size:0.82rem; }
+    .auth-link { color:var(--pink); cursor:pointer; font-weight:700; }
+    .auth-link:hover { text-decoration:underline; }
+    .auth-error {
+      background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3);
+      border-radius:12px; padding:12px 16px; margin-bottom:16px;
+      font-size:0.85rem; color:#FCA5A5; display:none;
+    }
+    .auth-success {
+      background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3);
+      border-radius:12px; padding:12px 16px; margin-bottom:16px;
+      font-size:0.85rem; color:#86EFAC; display:none;
+    }
+    .back-home {
+      display:block; text-align:center; margin-top:20px;
+      color:var(--white3); font-size:0.85rem; transition:color 0.3s;
+    }
+    .back-home:hover { color:var(--pink); }
+  </style>
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="/images/logo-kribo.png" alt="Kribo" onerror="this.outerHTML='<div style=\'font-size:3.5rem;text-align:center;margin-bottom:12px\'>🍌</div>'"/>
+      <h1>SNACK <span>KRIBO</span></h1>
+      <p>Kripik Istimewa Bro!</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Masuk</button>
+      <button class="auth-tab" onclick="switchTab('register')">Daftar</button>
+    </div>
+
+    <div id="authError" class="auth-error"></div>
+    <div id="authSuccess" class="auth-success"></div>
+
+    <!-- LOGIN -->
+    <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label">📧 Email</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="email@contoh.com" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔒 Password</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="Masukkan password" required/>
+      </div>
+      <button class="btn-auth" type="submit" id="loginBtn">Masuk</button>
+    </form>
+
+    <!-- REGISTER -->
+    <form class="auth-form" id="registerForm" style="display:none" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label class="form-label">👤 Nama Lengkap</label>
+        <input class="form-input" id="regName" type="text" placeholder="Nama lengkap kamu" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📧 Email</label>
+        <input class="form-input" id="regEmail" type="email" placeholder="email@contoh.com" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔒 Password</label>
+        <input class="form-input" id="regPass" type="password" placeholder="Min. 6 karakter" required minlength="6"/>
+      </div>
+      <div class="affiliate-toggle" id="affToggle" onclick="toggleAffiliate()">
+        <div class="aff-check" id="affCheck"></div>
+        <div class="aff-text">
+          <strong>💰 Daftar sebagai Affiliate</strong>
+          <span>Dapatkan komisi dari setiap penjualan</span>
+        </div>
+      </div>
+      <button class="btn-auth" type="submit" id="regBtn">Daftar Sekarang</button>
+    </form>
+
+    <a href="/" class="back-home">← Kembali ke Beranda</a>
+  </div>
+</div>
+
+<script type="module">
+import '/js/data.js';
+
+let isAffiliate = false;
+
+window.switchTab = function(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.auth-tab:${tab==='login'?'first':'last'}-child`).classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  hideMessages();
+};
+
+window.toggleAffiliate = function() {
+  isAffiliate = !isAffiliate;
+  document.getElementById('affToggle').classList.toggle('active', isAffiliate);
+  document.getElementById('affCheck').textContent = isAffiliate ? '✓' : '';
+};
+
+function showError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('authSuccess').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('authSuccess');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('authError').style.display = 'none';
+}
+function hideMessages() {
+  document.getElementById('authError').style.display = 'none';
+  document.getElementById('authSuccess').style.display = 'none';
+}
+
+window.handleLogin = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = '⏳ Memproses...';
+  hideMessages();
+  try {
+    await DB.init();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const { user, userData } = await DB.login(email, pass);
+    showSuccess('✅ Login berhasil! Mengalihkan...');
+    setTimeout(() => {
+      if (userData?.isAffiliate && userData?.affiliateApproved) {
+        window.location.href = '/affiliate.html';
+      } else {
+        window.location.href = '/shop.html';
+      }
+    }, 1000);
+  } catch(err) {
+    const msg = err.code === 'auth/invalid-credential' ? 'Email atau password salah!'
+      : err.code === 'auth/user-not-found' ? 'Akun tidak ditemukan!'
+      : err.code === 'auth/too-many-requests' ? 'Terlalu banyak percobaan, coba lagi nanti.'
+      : 'Gagal masuk: ' + err.message;
+    showError('❌ ' + msg);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Masuk';
+  }
+};
+
+window.handleRegister = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('regBtn');
+  btn.disabled = true; btn.textContent = '⏳ Mendaftar...';
+  hideMessages();
+  try {
+    await DB.init();
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    await DB.register(email, pass, name, isAffiliate);
+    if (isAffiliate) {
+      showSuccess('✅ Pendaftaran affiliate berhasil! Menunggu persetujuan admin. Mengalihkan...');
+      setTimeout(() => { window.location.href = '/affiliate.html'; }, 2000);
+    } else {
+      showSuccess('✅ Registrasi berhasil! Mengalihkan ke toko...');
+      setTimeout(() => { window.location.href = '/shop.html'; }, 1500);
+    }
+  } catch(err) {
+    const msg = err.code === 'auth/email-already-in-use' ? 'Email sudah terdaftar!'
+      : err.code === 'auth/weak-password' ? 'Password terlalu lemah (min. 6 karakter)!'
+      : 'Gagal mendaftar: ' + err.message;
+    showError('❌ ' + msg);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Daftar Sekarang';
+  }
+};
+
+// Check if redirected for affiliate signup
+const params = new URLSearchParams(window.location.search);
+if (params.get('mode') === 'affiliate') {
+  switchTab('register');
+  setTimeout(() => { if (!isAffiliate) toggleAffiliate(); }, 100);
+}
+
+// If already logged in, redirect
+(async () => {
+  try {
+    await DB.init();
+    const user = DB.getCurrentUser();
+    if (user) {
+      const userData = await DB.getUserData(user.uid);
+      if (userData?.isAffiliate) window.location.href = '/affiliate.html';
+      else window.location.href = '/shop.html';
+    }
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

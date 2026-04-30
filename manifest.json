@@ -1,0 +1,15 @@
+{
+  "name": "Snack Kribo",
+  "short_name": "Snack Kribo",
+  "description": "Snack Kribo - Kripik Istimewa Bro! Keripik pisang premium.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A14",
+  "theme_color": "#E91E8C",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/images/logo-kribo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/images/logo-kribo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["food", "shopping", "lifestyle"]
+}
