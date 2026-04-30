@@ -626,6 +626,41 @@ async function deleteBanner(id) {
   } catch(e) { showToast('❌ Gagal menghapus'); }
 }
 
+function renderLandingImagePreview(url, inputId, wrapId) {
+  const wrap = document.getElementById(wrapId);
+  const inp  = document.getElementById(inputId);
+  if (url) {
+    wrap.innerHTML = `<img src="${CLOUDINARY.thumb(url, 200)}" style="width:100px;height:100px;object-fit:cover;border-radius:12px;border:2px solid var(--border)"/>`;
+    if(inp) inp.value = url;
+  } else {
+    wrap.innerHTML = '';
+    if(inp) inp.value = '';
+  }
+}
+
+function removeLandingImage(type) {
+  if (type === 'hero') renderLandingImagePreview('', 'lHeroImageUrl', 'lHeroImageWrap');
+  if (type === 'about') renderLandingImagePreview('', 'lAboutImageUrl', 'lAboutImageWrap');
+}
+
+async function uploadLandingImage(el, type) {
+  const file = el.files[0];
+  if (!file) return;
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY.uploadPreset);
+    const res = await fetch(CLOUDINARY.baseUrl(), { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.secure_url) {
+      if (type === 'hero') renderLandingImagePreview(data.secure_url, 'lHeroImageUrl', 'lHeroImageWrap');
+      if (type === 'about') renderLandingImagePreview(data.secure_url, 'lAboutImageUrl', 'lAboutImageWrap');
+      showToast('✅ Foto berhasil diupload!');
+    }
+  } catch(e) { showToast('❌ Gagal upload'); }
+  finally { el.value = ''; }
+}
+
 async function renderLanding() {
   const l = await DB.getLanding();
   document.getElementById('lHeroBadge').value = l.hero?.badge || '';
