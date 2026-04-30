@@ -2,6 +2,12 @@
 // Snack Kribo - Data Layer (Firebase Firestore + Auth)
 // ============================================================
 
+// Clean URL (Hide .html extension from address bar)
+if (window.location.pathname.endsWith('.html')) {
+  const cleanUrl = window.location.pathname.replace(/\.html$/, '') + window.location.search + window.location.hash;
+  window.history.replaceState(null, '', cleanUrl);
+}
+
 const CLOUDINARY = {
   cloudName: 'dyhvx9wit',
   uploadPreset: 'jastipku_unsigned',
