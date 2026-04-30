@@ -224,9 +224,9 @@ function renderImagePreview(url, wrapId, inputId, btnId) {
     if(btn) btn.textContent = '📷 Upload Foto';
   }
 }
-window.removeProductImage = function() { renderImagePreview(''); };
+function removeProductImage() { renderImagePreview(''); }
 
-window.uploadProductImage = async function(el) {
+async function uploadProductImage(el) {
   const file = el.files[0];
   if (!file) return;
   const btn = document.getElementById('uploadBtn');
