@@ -18,12 +18,13 @@ const CLOUDINARY = {
 window.CLOUDINARY = CLOUDINARY;
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAziaaMGyZwJ3D82Ui5uD-nUtED3BkL8Jw",
-  authDomain: "jastip-c3f06.firebaseapp.com",
-  projectId: "jastip-c3f06",
-  storageBucket: "jastip-c3f06.firebasestorage.app",
-  messagingSenderId: "539374014854",
-  appId: "1:539374014854:web:048d4fa328f68b65485c07"
+  apiKey: "AIzaSyBgOuF0KR12hhMZVINyO8gRn0ahpC9jH4I",
+  authDomain: "snack-kribo.firebaseapp.com",
+  projectId: "snack-kribo",
+  storageBucket: "snack-kribo.firebasestorage.app",
+  messagingSenderId: "18161473320",
+  appId: "1:18161473320:web:08d996766de93e5256e21d",
+  measurementId: "G-M68NJDV1JG"
 };
 
 const DEFAULTS = {
