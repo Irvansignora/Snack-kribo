@@ -68,14 +68,18 @@
 <!-- ABOUT / DISCOVER -->
 <section class="section about-section" id="tentang">
   <div class="about-image">
-    <img id="aboutImage" src="/images/logo-kribo.png" alt="Discover" onerror="this.outerHTML='<div style=\'width:100%;height:400px;background:#eee;display:flex;align-items:center;justify-content:center;border-radius:8px\'>Gambar Tentang Kami</div>'"/>
+    <div id="aboutImageWrap" style="width:100%;min-height:350px;background:#f0f0f0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+      <img id="aboutImage" src="" alt="Tentang Kami" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:8px;"/>
+      <span id="aboutImagePlaceholder" style="font-size:4rem">🍌</span>
+    </div>
   </div>
   <div class="about-text">
     <div id="aboutTitleDesc">
-      <h2>Discover the taste of our authentic flavour!</h2>
-      <p>Memuat deskripsi...</p>
+      <h2>Cerita di Balik <span style="color:var(--brand)">Snack Kribo</span></h2>
+      <p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p>
+      <p style="margin-top:12px">Setiap gigitan dibuat dari 100% pisang pilihan terbaik, diproses secara higienis tanpa pengawet dan pewarna buatan. Hasilnya? Keripik yang renyah sempurna, manis pas, dan lumer di mulut — sekali coba pasti nagih! 🍌</p>
     </div>
-    <a href="/shop.html" class="btn-outline-brand">Learn More</a>
+    <a href="/shop.html" class="btn-outline-brand">Belanja Sekarang</a>
   </div>
 </section>
 
@@ -227,13 +231,16 @@ async function renderLanding() {
     }
 
     // About
-    if(l.about.imageUrl) {
-      const abImg = document.getElementById('aboutImage');
+    const abImg = document.getElementById('aboutImage');
+    const abPlaceholder = document.getElementById('aboutImagePlaceholder');
+    if (l.about?.imageUrl) {
       abImg.src = CLOUDINARY.thumb(l.about.imageUrl, 800);
+      abImg.style.display = 'block';
+      if (abPlaceholder) abPlaceholder.style.display = 'none';
     }
     document.getElementById('aboutTitleDesc').innerHTML = `
-      ${l.about.titleHtml ? `<h2>${l.about.titleHtml}</h2>` : ''}
-      ${l.about.descHtml}
+      ${l.about?.titleHtml ? `<h2>${l.about.titleHtml}</h2>` : ''}
+      ${l.about?.descHtml || ''}
     `;
 
     // Testimonials
