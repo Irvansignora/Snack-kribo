@@ -171,13 +171,40 @@
           <div class="form-group full"><label class="form-label">Judul (Bisa pakai HTML)</label><textarea class="form-control" id="lHeroTitle" rows="3"></textarea></div>
           <div class="form-group full"><label class="form-label">Sub-Judul</label><textarea class="form-control" id="lHeroSub" rows="3"></textarea></div>
           <div class="form-group full">
-            <label class="form-label">📷 Gambar Hero (Cloudinary)</label>
-            <div id="lHeroImageWrap" style="margin-bottom:10px"></div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <label style="cursor:pointer"><button type="button" class="btn btn-ghost btn-sm" onclick="this.parentNode.querySelector('input').click()">📷 Upload Foto</button><input type="file" accept="image/*" style="display:none" onchange="uploadLandingImage(this, 'lHeroImageUrl', 'lHeroImageWrap')"/></label>
-              <button class="btn btn-danger btn-sm" onclick="removeLandingImage('lHeroImageUrl', 'lHeroImageWrap')" id="lHeroBtnRemove" style="display:none">Hapus</button>
+            <label class="form-label">📷 Gambar Hero Slider (Cloudinary) — Bisa sampai 3 foto</label>
+
+            <!-- Slot 1 -->
+            <div style="margin-bottom:14px">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:6px">📸 Foto 1 (Utama)</div>
+              <div id="lHeroImageWrap1" style="margin-bottom:8px"></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <label style="cursor:pointer"><button type="button" class="btn btn-ghost btn-sm" onclick="this.parentNode.querySelector('input').click()">📷 Upload Foto 1</button><input type="file" accept="image/*" style="display:none" onchange="uploadLandingImage(this, 'lHeroImageUrl1', 'lHeroImageWrap1')"/></label>
+                <button class="btn btn-danger btn-sm" onclick="removeLandingImage('lHeroImageUrl1', 'lHeroImageWrap1')" id="lHeroBtnRemove1" style="display:none">Hapus</button>
+              </div>
+              <input type="hidden" id="lHeroImageUrl1" value=""/>
             </div>
-            <input type="hidden" id="lHeroImageUrl" value=""/>
+
+            <!-- Slot 2 -->
+            <div style="margin-bottom:14px">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:6px">📸 Foto 2 (Opsional)</div>
+              <div id="lHeroImageWrap2" style="margin-bottom:8px"></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <label style="cursor:pointer"><button type="button" class="btn btn-ghost btn-sm" onclick="this.parentNode.querySelector('input').click()">📷 Upload Foto 2</button><input type="file" accept="image/*" style="display:none" onchange="uploadLandingImage(this, 'lHeroImageUrl2', 'lHeroImageWrap2')"/></label>
+                <button class="btn btn-danger btn-sm" onclick="removeLandingImage('lHeroImageUrl2', 'lHeroImageWrap2')" id="lHeroBtnRemove2" style="display:none">Hapus</button>
+              </div>
+              <input type="hidden" id="lHeroImageUrl2" value=""/>
+            </div>
+
+            <!-- Slot 3 -->
+            <div style="margin-bottom:6px">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:6px">📸 Foto 3 (Opsional)</div>
+              <div id="lHeroImageWrap3" style="margin-bottom:8px"></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <label style="cursor:pointer"><button type="button" class="btn btn-ghost btn-sm" onclick="this.parentNode.querySelector('input').click()">📷 Upload Foto 3</button><input type="file" accept="image/*" style="display:none" onchange="uploadLandingImage(this, 'lHeroImageUrl3', 'lHeroImageWrap3')"/></label>
+                <button class="btn btn-danger btn-sm" onclick="removeLandingImage('lHeroImageUrl3', 'lHeroImageWrap3')" id="lHeroBtnRemove3" style="display:none">Hapus</button>
+              </div>
+              <input type="hidden" id="lHeroImageUrl3" value=""/>
+            </div>
           </div>
         </div>
       </div>
