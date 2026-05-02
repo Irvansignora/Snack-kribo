@@ -162,28 +162,30 @@ body {
 .product-card:active { transform: scale(0.97); }
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 .product-card.out-of-stock { opacity:0.55; }
-/* Product image area — kotak sempurna, gambar rapi */
+/* Product image area */
 .product-img-wrap {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 140px;
   overflow: hidden;
   position: relative;
-  background: #F7F0E8;
+  background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid var(--border2, #F5EDE2);
 }
 
-/* Gambar produk */
+/* Gambar produk — contain supaya tidak crop */
 .product-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
+  padding: 6px;
   transition: transform 0.3s ease;
 }
-.product-card:hover .product-img { transform: scale(1.04); }
+.product-card:hover .product-img { transform: scale(1.03); }
 
 /* Fallback emoji kalau tidak ada gambar */
 .product-emoji-fallback {
@@ -198,10 +200,11 @@ body {
 
 /* Keep old class as alias buat backward compat */
 .product-emoji-wrap {
-  width: 100%; aspect-ratio: 1/1;
-  background: #F7F0E8;
+  width: 100%; height: 140px;
+  background: #FFFFFF;
   display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border2, #F5EDE2);
 }
 .sold-out-badge {
   position:absolute; top:6px; right:6px;
