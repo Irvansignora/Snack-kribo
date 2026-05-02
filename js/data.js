@@ -16,6 +16,11 @@ const CLOUDINARY = {
     if (!url) return '';
     return url.replace('/upload/', `/upload/w_${w},h_${w},c_fill,q_auto:eco,f_webp/`);
   },
+  banner(url, w=1400) {
+    if (!url) return '';
+    // c_limit: scale down to max width but preserve original aspect ratio (no crop)
+    return url.replace('/upload/', `/upload/w_${w},c_limit,q_auto:eco,f_webp/`);
+  },
   mini(url, w=80) {
     if (!url) return '';
     return url.replace('/upload/', `/upload/w_${w},h_${w},c_fill,q_auto:low,f_webp/`);
