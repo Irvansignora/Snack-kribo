@@ -166,13 +166,22 @@ function renderProducts() {
     const cart = DB.getCart();
     const item = cart.find(c => c.id === p.id);
     const qty  = item ? item.qty : 0;
-    const imgHtml = p.imageUrl
-      ? `<img src="${CLOUDINARY.thumb(p.imageUrl, 300)}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
-    const emojiHtml = `<span style="${p.imageUrl?'display:none':''}; display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:2.8rem">${p.emoji}</span>`;
+
+    // Kalau ada imageUrl → tampil gambar penuh, emoji dihapus sama sekali
+    // Kalau tidak ada imageUrl → tampil emoji sebagai fallback
+    const mediaHtml = p.imageUrl
+      ? `<img
+           src="${CLOUDINARY.thumb(p.imageUrl, 400)}"
+           alt="${p.name}"
+           class="product-img"
+           loading="lazy"
+           onerror="this.parentNode.innerHTML='<span class=\\'product-emoji-fallback\\'>${p.emoji}</span>'"
+         >`
+      : `<span class="product-emoji-fallback">${p.emoji}</span>`;
+
     return `<div class="product-card ${!p.stock?'out-of-stock':''}" style="animation-delay:${i*0.04}s">
-      <div class="product-emoji-wrap">
-        ${imgHtml}${emojiHtml}
+      <div class="product-img-wrap">
+        ${mediaHtml}
         ${!p.stock ? '<span class="sold-out-badge">Habis</span>' : ''}
       </div>
       <div class="product-info">
