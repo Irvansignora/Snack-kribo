@@ -50,15 +50,18 @@ a { text-decoration: none; color: inherit; }
 /* HERO SLIDER */
 .hero-slider {
   margin-top: 75px; /* offset for navbar */
-  width: 100%; height: 60vh;
+  width: 100%;
   position: relative; overflow: hidden;
   background: #111;
 }
 .swiper { width: 100%; height: 100%; }
 .swiper-slide { display: flex; justify-content: center; align-items: center; }
 .swiper-slide img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  object-fit: contain;
+  display: block;
 }
 
 /* SECTIONS */
@@ -149,7 +152,7 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 768px) {
   .nav-links, .nav-actions { display: none; }
   .mobile-toggle { display: block; }
-  .hero-slider { height: 40vh; }
+  .hero-slider { height: auto; }
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
   .product-card { padding: 15px 10px; }
   .product-img-wrap { height: 120px; }
