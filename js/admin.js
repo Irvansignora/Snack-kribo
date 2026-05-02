@@ -638,14 +638,17 @@ function renderLandingImagePreview(url, inputId, wrapId) {
   }
 }
 
-function removeLandingImage(type) {
-  if (type === 'hero') renderLandingImagePreview('', 'lHeroImageUrl', 'lHeroImageWrap');
-  if (type === 'about') renderLandingImagePreview('', 'lAboutImageUrl', 'lAboutImageWrap');
+function removeLandingImage(inputId, wrapId, btnId) {
+  renderLandingImagePreview('', inputId, wrapId);
+  const btn = btnId ? document.getElementById(btnId) : null;
+  if (btn) btn.style.display = 'none';
 }
 
-async function uploadLandingImage(el, type) {
+async function uploadLandingImage(el, inputId, wrapId, btnId) {
   const file = el.files[0];
   if (!file) return;
+  const wrap = document.getElementById(wrapId);
+  if (wrap) wrap.innerHTML = `<span style="font-size:0.78rem;color:var(--text3)">⏳ Mengupload...</span>`;
   try {
     const fd = new FormData();
     fd.append('file', file);
@@ -653,11 +656,18 @@ async function uploadLandingImage(el, type) {
     const res = await fetch(CLOUDINARY.baseUrl(), { method:'POST', body:fd });
     const data = await res.json();
     if (data.secure_url) {
-      if (type === 'hero') renderLandingImagePreview(data.secure_url, 'lHeroImageUrl', 'lHeroImageWrap');
-      if (type === 'about') renderLandingImagePreview(data.secure_url, 'lAboutImageUrl', 'lAboutImageWrap');
+      renderLandingImagePreview(data.secure_url, inputId, wrapId);
+      const btn = btnId ? document.getElementById(btnId) : null;
+      if (btn) btn.style.display = 'inline-flex';
       showToast('✅ Foto berhasil diupload!');
+    } else {
+      if (wrap) wrap.innerHTML = '';
+      showToast('❌ Gagal upload');
     }
-  } catch(e) { showToast('❌ Gagal upload'); }
+  } catch(e) {
+    if (wrap) wrap.innerHTML = '';
+    showToast('❌ Gagal upload');
+  }
   finally { el.value = ''; }
 }
 
@@ -666,18 +676,31 @@ async function renderLanding() {
   document.getElementById('lHeroBadge').value = l.hero?.badge || '';
   document.getElementById('lHeroTitle').value = l.hero?.titleHtml || '';
   document.getElementById('lHeroSub').value = l.hero?.subtitle || '';
-  renderLandingImagePreview(l.hero?.imageUrl, 'lHeroImageUrl', 'lHeroImageWrap');
+
+  // Support heroImages array (3 slots) with backward compat to single imageUrl
+  const heroImgs = l.hero?.heroImages || [l.hero?.imageUrl || '', '', ''];
+  [1, 2, 3].forEach(i => {
+    const url = heroImgs[i - 1] || '';
+    renderLandingImagePreview(url, `lHeroImageUrl${i}`, `lHeroImageWrap${i}`);
+    const removeBtn = document.getElementById(`lHeroBtnRemove${i}`);
+    if (removeBtn) removeBtn.style.display = url ? 'inline-flex' : 'none';
+  });
 
   document.getElementById('lAboutTitle').value = l.about?.titleHtml || '';
   document.getElementById('lAboutDesc').value = l.about?.descHtml || '';
   document.getElementById('lAboutBadges').value = (l.about?.badges || []).join(', ');
   renderLandingImagePreview(l.about?.imageUrl, 'lAboutImageUrl', 'lAboutImageWrap');
+  const aboutRemoveBtn = document.getElementById('lAboutBtnRemove');
+  if (aboutRemoveBtn) aboutRemoveBtn.style.display = l.about?.imageUrl ? 'inline-flex' : 'none';
 }
 
 async function saveLandingSettings() {
   const l = await DB.getLanding();
   const badgesStr = document.getElementById('lAboutBadges').value;
   const badges = badgesStr ? badgesStr.split(',').map(s => s.trim()).filter(s => s) : [];
+
+  // Collect 3 hero image URLs
+  const heroImages = [1, 2, 3].map(i => document.getElementById(`lHeroImageUrl${i}`)?.value || '');
 
   const newL = {
     ...l,
@@ -686,14 +709,15 @@ async function saveLandingSettings() {
       badge: document.getElementById('lHeroBadge').value,
       titleHtml: document.getElementById('lHeroTitle').value,
       subtitle: document.getElementById('lHeroSub').value,
-      imageUrl: document.getElementById('lHeroImageUrl').value
+      heroImages,                   // array [url1, url2, url3]
+      imageUrl: heroImages[0] || '' // backward compat
     },
     about: {
       ...l.about,
       titleHtml: document.getElementById('lAboutTitle').value,
       descHtml: document.getElementById('lAboutDesc').value,
       badges: badges,
-      imageUrl: document.getElementById('lAboutImageUrl').value
+      imageUrl: document.getElementById('lAboutImageUrl')?.value || ''
     }
   };
 
