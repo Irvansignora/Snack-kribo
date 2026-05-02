@@ -192,7 +192,7 @@ async function renderLanding() {
 
     if (heroImgs.length > 0) {
       heroWrap.innerHTML = heroImgs.map((url, i) =>
-        `<div class="swiper-slide"><img src="${CLOUDINARY.thumb(url, 1400)}" alt="Banner ${i+1}" loading="${i===0?'eager':'lazy'}"/></div>`
+        `<div class="swiper-slide"><img src="${CLOUDINARY.banner(url)}" alt="Banner ${i+1}" loading="${i===0?'eager':'lazy'}"/></div>`
       ).join('');
     }
     // else: keep placeholder slides from HTML
@@ -238,10 +238,9 @@ async function renderLanding() {
       abImg.style.display = 'block';
       if (abPlaceholder) abPlaceholder.style.display = 'none';
     }
-    document.getElementById('aboutTitleDesc').innerHTML = `
-      ${l.about?.titleHtml ? `<h2>${l.about.titleHtml}</h2>` : ''}
-      ${l.about?.descHtml || ''}
-    `;
+    const aboutTitle = l.about?.titleHtml || 'Cerita di Balik <span style="color:var(--brand)">Snack Kribo</span>';
+    const aboutDesc = l.about?.descHtml || '<p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p><p style="margin-top:12px">Dibuat dari 100% pisang pilihan terbaik, diproses secara higienis tanpa pengawet dan pewarna buatan. Renyah sempurna, manis pas, lumer di mulut — sekali coba pasti nagih! 🍌</p>';
+    document.getElementById('aboutTitleDesc').innerHTML = `<h2>${aboutTitle}</h2>${aboutDesc}`;
 
     // Testimonials
     const testiGrid = document.getElementById('landingTestiGrid');
