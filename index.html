@@ -182,21 +182,22 @@ async function renderLanding() {
 
     // Hero Slider
     const heroWrap = document.getElementById('heroSliderWrap');
-    if (l.hero.imageUrl) {
-      const img1 = CLOUDINARY.thumb(l.hero.imageUrl, 1200);
-      // For demo of slider, we create 3 identical slides or different ones if user adds them.
-      // Currently using the same uploaded image across 3 slides.
-      heroWrap.innerHTML = `
-        <div class="swiper-slide"><img src="${img1}" alt="Banner 1" /></div>
-        <div class="swiper-slide"><img src="${img1}" alt="Banner 2" style="filter: brightness(0.9) contrast(1.1);"/></div>
-        <div class="swiper-slide"><img src="${img1}" alt="Banner 3" style="filter: hue-rotate(15deg);"/></div>
-      `;
+    const heroImgs = (l.hero?.heroImages || []).filter(u => u && u.trim() !== '');
+    // backward compat: jika heroImages kosong tapi ada imageUrl lama, pakai itu
+    if (heroImgs.length === 0 && l.hero?.imageUrl) heroImgs.push(l.hero.imageUrl);
+
+    if (heroImgs.length > 0) {
+      heroWrap.innerHTML = heroImgs.map((url, i) =>
+        `<div class="swiper-slide"><img src="${CLOUDINARY.thumb(url, 1400)}" alt="Banner ${i+1}" loading="${i===0?'eager':'lazy'}"/></div>`
+      ).join('');
     }
-    
+    // else: keep placeholder slides from HTML
+
     // Initialize Swiper after injecting slides
+    if (heroSwiper) { try { heroSwiper.destroy(true, true); } catch(e){} }
     heroSwiper = new Swiper('.heroSwiper', {
-      loop: true,
-      autoplay: { delay: 3000, disableOnInteraction: false },
+      loop: heroImgs.length > 1,
+      autoplay: heroImgs.length > 1 ? { delay: 3500, disableOnInteraction: false } : false,
       pagination: { el: '.swiper-pagination', clickable: true },
       speed: 800,
       effect: 'fade',
@@ -245,8 +246,7 @@ async function renderLanding() {
         <p style="font-size:0.8rem;color:var(--text-dim)">${t.loc}</p>
       </div>`).join('');
 
-    document.getElementById('footerYear').textContent = new Date().getFullYear();
-    document.getElementById('footerCopyName').textContent = s.storeName;
+    document.getElementById('footerCopy').innerHTML = `© ${new Date().getFullYear()} ${s.storeName}. All rights reserved.`;
 
   } catch(e) { console.error('Error rendering landing:', e); }
 }
