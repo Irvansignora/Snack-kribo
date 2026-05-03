@@ -10,7 +10,7 @@
   <link rel="manifest" href="/manifest.json"/>
   <link rel="icon" href="/images/logo-kribo.png" type="image/png"/>
   <link rel="apple-touch-icon" href="/images/logo-kribo.png"/>
-  <title>Snack Kribo - Kripik Istimewa Bro!</title>
+  <title>Snack Kribo — Kripik Istimewa Bro!</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="/css/landing.css"/>
 </head>
@@ -31,17 +31,17 @@
   </ul>
   <div class="nav-actions">
     <a href="/login.html">Masuk</a>
-    <a href="/shop.html" style="background:var(--brand);color:#fff;padding:8px 20px;border-radius:4px;">Belanja</a>
+    <a href="/shop.html" class="nav-btn-shop">Belanja</a>
   </div>
   <button class="mobile-toggle" onclick="toggleMobile()">☰</button>
 </nav>
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <button onclick="toggleMobile()" style="align-self:flex-end;background:none;border:none;font-size:1.5rem;cursor:pointer;margin-bottom:20px">&times;</button>
+  <button onclick="toggleMobile()" style="align-self:flex-end;background:none;border:none;font-size:1.5rem;cursor:pointer;margin-bottom:20px;color:var(--text)">&times;</button>
   <a href="#beranda" onclick="toggleMobile()">Beranda</a>
   <a href="#tentang" onclick="toggleMobile()">Tentang Kami</a>
-  <a href="#produk" onclick="toggleMobile()">Menu</a>
+  <a href="#produk" onclick="toggleMobile()">Produk</a>
   <a href="#testimoni" onclick="toggleMobile()">Testimoni</a>
   <a href="/login.html" onclick="toggleMobile()">Masuk</a>
   <a href="/shop.html" onclick="toggleMobile()">Belanja</a>
@@ -65,37 +65,115 @@
   </div>
 </section>
 
-<!-- ABOUT / DISCOVER -->
-<section class="section about-section" id="tentang">
-  <div class="about-image">
-    <div id="aboutImageWrap" style="width:100%;min-height:350px;background:#f0f0f0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-      <img id="aboutImage" src="" alt="Tentang Kami" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:8px;"/>
-      <span id="aboutImagePlaceholder" style="font-size:4rem">🍌</span>
-    </div>
+<!-- MARQUEE STRIP -->
+<div class="marquee-strip">
+  <div class="marquee-inner" id="marqueeInner">
+    <span class="marquee-item">🔥 Snack Kribo — Kripik Istimewa Bro!</span>
+    <span class="marquee-item">🍌 100% Pisang Pilihan Terbaik</span>
+    <span class="marquee-item">✅ Tanpa Pengawet & Pewarna Buatan</span>
+    <span class="marquee-item">🚀 Pengiriman Cepat Seluruh Indonesia</span>
+    <span class="marquee-item">💸 Gabung Affiliate & Raih Komisi</span>
+    <span class="marquee-item">⭐ Renyah Maksimal, Lumer di Mulut</span>
+    <span class="marquee-item">🔥 Snack Kribo — Kripik Istimewa Bro!</span>
+    <span class="marquee-item">🍌 100% Pisang Pilihan Terbaik</span>
+    <span class="marquee-item">✅ Tanpa Pengawet & Pewarna Buatan</span>
+    <span class="marquee-item">🚀 Pengiriman Cepat Seluruh Indonesia</span>
+    <span class="marquee-item">💸 Gabung Affiliate & Raih Komisi</span>
+    <span class="marquee-item">⭐ Renyah Maksimal, Lumer di Mulut</span>
   </div>
-  <div class="about-text">
-    <div id="aboutTitleDesc">
-      <h2>Cerita di Balik <span style="color:var(--brand)">Snack Kribo</span></h2>
-      <p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p>
-      <p style="margin-top:12px">Setiap gigitan dibuat dari 100% pisang pilihan terbaik, diproses secara higienis tanpa pengawet dan pewarna buatan. Hasilnya? Keripik yang renyah sempurna, manis pas, dan lumer di mulut — sekali coba pasti nagih! 🍌</p>
+</div>
+
+<!-- FEATURES / KEUNGGULAN -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="features-header reveal">
+      <div class="section-eyebrow">Kenapa Pilih Kami</div>
+      <h2 class="section-title">Keunggulan <span>Snack Kribo</span></h2>
+      <p class="section-subtitle">Dibuat dengan standar kualitas premium yang tak pernah kami kompromikan — dari pemilihan bahan hingga ke tangan kamu.</p>
     </div>
-    <a href="/shop.html" class="btn-outline-brand">Belanja Sekarang</a>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">🍌</div>
+        <div class="feature-title">100% Pisang Pilihan</div>
+        <div class="feature-desc">Hanya pisang berkualitas tinggi yang kami pilih secara ketat dari kebun terbaik lokal Indonesia.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">🌿</div>
+        <div class="feature-title">Tanpa Pengawet</div>
+        <div class="feature-desc">Proses produksi alami tanpa bahan pengawet kimia — aman untuk seluruh keluarga, termasuk si kecil.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">🧪</div>
+        <div class="feature-title">Tanpa Pewarna Buatan</div>
+        <div class="feature-desc">Warna cantik dari bahan premium alami. Tidak ada pewarna sintetis yang berbahaya.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">❄️</div>
+        <div class="feature-title">Renyah Maksimal</div>
+        <div class="feature-desc">Tekstur renyah sempurna yang tahan lama dengan proses produksi yang presisi dan higienis.</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- PRODUCTS / MENU -->
-<section class="section products-section" id="produk">
-  <h2 class="section-title">OUR PRODUCT</h2>
-  <div class="products-grid" id="landingProductsGrid">
-    <div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">⏳ Memuat produk...</div>
+<!-- ABOUT -->
+<section class="about-section" id="tentang">
+  <div class="about-image-wrap reveal">
+    <div class="about-img-inner">
+      <img id="aboutImage" src="" alt="Tentang Kami" style="display:none"/>
+      <span class="about-placeholder" id="aboutImagePlaceholder">🍌</span>
+    </div>
+    <div class="about-badge-row" id="aboutBadges">
+      <span class="about-badge">🏆 Premium Quality</span>
+      <span class="about-badge">💯 100% Natural</span>
+      <span class="about-badge">🚀 Fast Delivery</span>
+    </div>
+  </div>
+  <div class="about-content reveal reveal-delay-1">
+    <div id="aboutTitleDesc">
+      <div class="section-eyebrow">Tentang Kami</div>
+      <h2 class="section-title">Cerita di Balik <span>Snack Kribo</span></h2>
+      <p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p>
+      <p>Setiap keripik dibuat dengan penuh cinta, menggunakan 100% pisang pilihan terbaik yang dipetik langsung dari kebun lokal terpercaya. Diproses secara higienis tanpa pengawet dan pewarna buatan — hasilnya? Renyah sempurna, manis pas, dan lumer di mulut. Sekali coba, pasti nagih! 🍌</p>
+    </div>
+    <a href="/shop.html" class="btn-brand">
+      Belanja Sekarang
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="produk">
+  <div class="products-inner">
+    <div class="products-header reveal">
+      <div>
+        <div class="section-eyebrow">Menu Unggulan</div>
+        <h2 class="section-title">Produk <span>Pilihan</span></h2>
+        <p class="section-subtitle">Varian rasa yang bikin kamu susah berhenti ngemil.</p>
+      </div>
+      <a href="/shop.html" class="btn-ghost">
+        Lihat Semua
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="products-grid" id="landingProductsGrid">
+      <div style="text-align:center;grid-column:1/-1;color:var(--text3);padding:40px 0">⏳ Memuat produk...</div>
+    </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="section" id="testimoni" style="background:#FFF;">
-  <h2 class="section-title">TESTIMONIALS</h2>
-  <div class="testi-grid" id="landingTestiGrid">
-    <div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">⏳ Memuat testimoni...</div>
+<section class="testi-section" id="testimoni">
+  <div class="testi-inner">
+    <div class="testi-header reveal">
+      <div class="section-eyebrow">Testimoni</div>
+      <h2 class="section-title">Yang Mereka <span>Katakan</span></h2>
+      <p class="section-subtitle">Ribuan pelanggan puas sudah membuktikannya sendiri.</p>
+    </div>
+    <div class="testi-grid" id="landingTestiGrid">
+      <div style="text-align:center;grid-column:1/-1;color:var(--text3);padding:40px 0">⏳ Memuat testimoni...</div>
+    </div>
   </div>
 </section>
 
@@ -103,11 +181,15 @@
 <section class="affiliate-section" id="affiliate">
   <div class="affiliate-banner">
     <div class="affiliate-banner-content">
-      <h2>JADI PARTNER KAMI, <span style="color:#FFD93D;">RAIH CUAN</span> TIAP HARI! 💸</h2>
-      <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto 30px; line-height: 1.8;">
-        Yuk gabung program <strong>Affiliate Snack Kribo</strong>! Cukup bagikan link referalmu, rebahan di rumah, dan nikmati komisi dari setiap produk yang terjual. Tanpa modal, tanpa pusing urus stok, cuan ngalir terus!
-      </p>
-      <a href="/login.html?mode=affiliate" class="btn-affiliate-large">Gabung Sekarang — Gratis!</a>
+      <div class="affiliate-eyebrow">Program Affiliate</div>
+      <h2>Raih <span>Cuan</span> Tiap Hari<br/>Bareng Kribo! 💸</h2>
+      <p>Bagikan link referal kamu, rebahan di rumah, dan nikmati komisi dari setiap produk yang terjual. Tanpa modal, tanpa urus stok, cuan ngalir terus!</p>
+    </div>
+    <div class="affiliate-cta">
+      <a href="/login.html?mode=affiliate" class="btn-affiliate-large">
+        Gabung Gratis
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -115,9 +197,9 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-grid">
-    <div class="footer-brand">
-      <h3 id="footerStoreName">SNACK <span>KRIBO</span></h3>
-      <p id="footerDesc">Keripik pisang premium dengan varian rasa yang bikin nagih. 100% pilihan terbaik, tanpa pengawet.</p>
+    <div>
+      <div class="footer-brand-name" id="footerStoreName">SNACK <span>KRIBO</span></div>
+      <p>Keripik pisang premium dengan varian rasa yang bikin nagih. 100% pilihan terbaik, tanpa pengawet.</p>
       <a href="https://wa.me/6281234567890" target="_blank" class="footer-wa" id="footerWA">💬 Chat via WhatsApp</a>
     </div>
     <div class="footer-col">
@@ -135,13 +217,13 @@
     </div>
     <div class="footer-col">
       <h4>Kontak</h4>
-      <a href="https://wa.me/6281234567890">📱 +62 812-3456-7890</a>
       <a href="#">📍 Indonesia</a>
       <a href="#">📧 info@snackkribo.com</a>
     </div>
   </div>
-  <div class="footer-bottom" id="footerCopy">
-    © 2026 Snack Kribo. All rights reserved.
+  <div class="footer-bottom">
+    <span id="footerCopy">© 2026 Snack Kribo. All rights reserved.</span>
+    <span style="color:var(--brand);font-weight:700">Kripik Istimewa Bro! 🍌</span>
   </div>
 </footer>
 
@@ -149,21 +231,30 @@
 <script type="module">
 import '/js/data.js';
 
-// Init Swiper
 let heroSwiper;
 
-// Scroll & UI Logic
+// Navbar scroll
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
+
+// Mobile menu
 window.toggleMobile = function() { document.getElementById('mobileMenu').classList.toggle('open'); };
+
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
     const t = document.querySelector(a.getAttribute('href'));
-    if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); toggleMobile(); }
+    if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); if(document.getElementById('mobileMenu').classList.contains('open')) toggleMobile(); }
   });
 });
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(el => { if(el.isIntersecting) { el.target.classList.add('visible'); revealObserver.unobserve(el.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // Render Dynamic Content
 async function renderLanding() {
@@ -174,60 +265,52 @@ async function renderLanding() {
     const products = await DB.getProducts();
 
     // Settings
-    if(s.logoUrl) document.getElementById('navLogo').src = CLOUDINARY.thumb(s.logoUrl, 100);
-    else document.getElementById('navLogo').outerHTML = `<span style="font-size:1.8rem;margin-right:8px">${s.logoEmoji||'🍌'}</span>`;
-    
-    document.getElementById('navStoreName').innerHTML = s.storeName.toUpperCase();
-    document.getElementById('footerStoreName').innerHTML = s.storeName.toUpperCase();
-    document.getElementById('footerWA').href = `https://wa.me/${s.whatsapp}`;
-    document.getElementById('footerCopy').innerHTML = `© ${new Date().getFullYear()} ${s.storeName}. All rights reserved.`;
+    if (s.logoUrl) document.getElementById('navLogo').src = CLOUDINARY.thumb(s.logoUrl, 100);
+    else document.getElementById('navLogo').outerHTML = `<span style="font-size:2rem;margin-right:8px">${s.logoEmoji||'🍌'}</span>`;
 
-    document.documentElement.style.setProperty('--brand', s.primaryColor || '#9C1A2E');
+    document.getElementById('navStoreName').innerHTML = s.storeName.toUpperCase().replace('SNACK ', 'SNACK <span>') + '</span>';
+    document.getElementById('footerStoreName').innerHTML = s.storeName.toUpperCase().replace('SNACK ', 'SNACK <span>') + '</span>';
+    document.getElementById('footerWA').href = `https://wa.me/${s.whatsapp}`;
+    document.documentElement.style.setProperty('--brand', s.primaryColor || '#E91E8C');
+    document.documentElement.style.setProperty('--brand-dark', (s.primaryColor || '#E91E8C'));
 
     // Hero Slider
     const heroWrap = document.getElementById('heroSliderWrap');
     const heroImgs = (l.hero?.heroImages || []).filter(u => u && u.trim() !== '');
-    // backward compat: jika heroImages kosong tapi ada imageUrl lama, pakai itu
     if (heroImgs.length === 0 && l.hero?.imageUrl) heroImgs.push(l.hero.imageUrl);
-
     if (heroImgs.length > 0) {
       heroWrap.innerHTML = heroImgs.map((url, i) =>
         `<div class="swiper-slide"><img src="${CLOUDINARY.banner(url)}" alt="Banner ${i+1}" loading="${i===0?'eager':'lazy'}"/></div>`
       ).join('');
     }
-    // else: keep placeholder slides from HTML
-
-    // Initialize Swiper after injecting slides
     if (heroSwiper) { try { heroSwiper.destroy(true, true); } catch(e){} }
     heroSwiper = new Swiper('.heroSwiper', {
       loop: heroImgs.length > 1,
-      autoplay: heroImgs.length > 1 ? { delay: 3500, disableOnInteraction: false } : false,
+      autoplay: heroImgs.length > 1 ? { delay: 4000, disableOnInteraction: false } : false,
       pagination: { el: '.swiper-pagination', clickable: true },
-      speed: 800,
-      effect: 'fade',
-      fadeEffect: { crossFade: true }
+      speed: 900, effect: 'fade', fadeEffect: { crossFade: true }
     });
 
     // Products
     const actProducts = products.filter(p => p.active).slice(0, 4);
     const prodGrid = document.getElementById('landingProductsGrid');
-    if(actProducts.length) {
-      prodGrid.innerHTML = actProducts.map((p, i) => {
-        const imgHtml = p.imageUrl 
+    if (actProducts.length) {
+      prodGrid.innerHTML = actProducts.map(p => {
+        const imgHtml = p.imageUrl
           ? `<img src="${CLOUDINARY.thumb(p.imageUrl, 400)}" alt="${p.name}"/>`
-          : `<div style="font-size:5rem">${p.emoji}</div>`;
+          : `<div style="font-size:4rem">${p.emoji}</div>`;
         return `
         <div class="product-card">
-          <div class="product-img-wrap">
-            ${imgHtml}
+          <div class="product-img-wrap">${imgHtml}</div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">${DB.formatRupiah(p.price)}</div>
+            <a href="/shop.html" class="btn-buy-card">Order Sekarang</a>
           </div>
-          <h3 class="product-name">${p.name}</h3>
-          <div class="product-price">${DB.formatRupiah(p.price)}</div>
-          <a href="/shop.html" class="btn-buy-card">Order</a>
         </div>`;
       }).join('');
     } else {
-      prodGrid.innerHTML = `<div style="text-align:center;grid-column:1/-1;color:var(--text-dim)">Belum ada produk</div>`;
+      prodGrid.innerHTML = `<div style="text-align:center;grid-column:1/-1;color:var(--text3);padding:40px 0">Belum ada produk</div>`;
     }
 
     // About
@@ -238,19 +321,37 @@ async function renderLanding() {
       abImg.style.display = 'block';
       if (abPlaceholder) abPlaceholder.style.display = 'none';
     }
-    const aboutTitle = l.about?.titleHtml || 'Cerita di Balik <span style="color:var(--brand)">Snack Kribo</span>';
-    const aboutDesc = l.about?.descHtml || '<p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p><p style="margin-top:12px">Dibuat dari 100% pisang pilihan terbaik, diproses secara higienis tanpa pengawet dan pewarna buatan. Renyah sempurna, manis pas, lumer di mulut — sekali coba pasti nagih! 🍌</p>';
-    document.getElementById('aboutTitleDesc').innerHTML = `<h2>${aboutTitle}</h2>${aboutDesc}`;
+    const aboutTitle = l.about?.titleHtml || 'Cerita di Balik <span>Snack Kribo</span>';
+    const aboutDesc = l.about?.descHtml || '<p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan tak terlupakan.</p><p>Setiap keripik dibuat dengan penuh cinta, menggunakan 100% pisang pilihan terbaik. Diproses secara higienis tanpa pengawet dan pewarna buatan. Renyah sempurna, manis pas, lumer di mulut — sekali coba pasti nagih! 🍌</p>';
+    document.getElementById('aboutTitleDesc').innerHTML = `
+      <div class="section-eyebrow">Tentang Kami</div>
+      <h2 class="section-title">${aboutTitle}</h2>
+      ${aboutDesc}
+    `;
+
+    // About badges
+    if (l.about?.badges?.length) {
+      document.getElementById('aboutBadges').innerHTML = l.about.badges.map(b =>
+        `<span class="about-badge">${b}</span>`
+      ).join('');
+    }
 
     // Testimonials
     const testiGrid = document.getElementById('landingTestiGrid');
-    testiGrid.innerHTML = l.testimonials.map((t, i) => `
-      <div style="background:#F5F5F5;padding:20px;border-radius:8px;text-align:center;">
-        <div style="color:#FFD93D;font-size:1.2rem;margin-bottom:10px">${'★'.repeat(t.rating)}</div>
-        <p style="font-style:italic;color:var(--text-dim);margin-bottom:15px">"${t.text}"</p>
-        <p style="font-weight:700;">${t.name}</p>
-        <p style="font-size:0.8rem;color:var(--text-dim)">${t.loc}</p>
-      </div>`).join('');
+    if (l.testimonials?.length) {
+      testiGrid.innerHTML = l.testimonials.map(t => `
+        <div class="testi-card">
+          <div class="testi-stars">${'★'.repeat(t.rating)}</div>
+          <p class="testi-text">"${t.text.replace(/"/g,'')}"</p>
+          <div class="testi-author">
+            <div class="testi-avatar">${t.name.charAt(0)}</div>
+            <div>
+              <div class="testi-name">${t.name}</div>
+              <div class="testi-loc">📍 ${t.loc}</div>
+            </div>
+          </div>
+        </div>`).join('');
+    }
 
     document.getElementById('footerCopy').innerHTML = `© ${new Date().getFullYear()} ${s.storeName}. All rights reserved.`;
 
