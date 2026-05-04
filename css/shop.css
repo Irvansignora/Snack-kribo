@@ -635,3 +635,19 @@ textarea.input-field { resize: vertical; min-height: 80px; }
 }
 .empty-state .es-emoji { font-size: 3.5rem; display: block; margin-bottom: 12px; }
 .empty-state p { font-size: 0.88rem; font-weight: 700; }
+
+/* ===== RESELLER PRICE ===== */
+.reseller-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #92400E;
+  background: #FEF3C7;
+  border: 1.5px solid #FDE68A;
+  border-radius: 8px;
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.product-price.reseller-active {
+  color: #16A34A;
+}
