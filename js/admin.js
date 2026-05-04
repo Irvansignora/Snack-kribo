@@ -173,7 +173,7 @@ async function renderProducts() {
       <td>${thumb}</td>
       <td><strong>${p.name}</strong><br><span style="font-size:0.75rem;color:var(--text3)">${(p.desc||'').substring(0,40)}...</span></td>
       <td>${cat ? cat.emoji+' '+cat.name : '-'}</td>
-      <td><strong>${DB.formatRupiah(p.price)}</strong></td>
+      <td><strong>${DB.formatRupiah(p.price)}</strong>${p.resellerPrice ? `<br><span style="font-size:0.72rem;color:#B45309;font-weight:700">🏪 ${DB.formatRupiah(p.resellerPrice)} (min ${p.resellerMinQty||1} pcs)</span>` : ''}</td>
       <td>
         <span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Aktif':'Nonaktif'}</span>
         <span class="badge ${p.stock?'badge-stock':'badge-nostock'}">${p.stock?'Ada Stok':'Habis'}</span>
@@ -197,6 +197,8 @@ async function openProductModal(id = null) {
   document.getElementById('pName').value    = p.name;
   document.getElementById('pDesc').value    = p.desc;
   document.getElementById('pPrice').value   = p.price;
+  document.getElementById('pResellerPrice').value  = p.resellerPrice || '';
+  document.getElementById('pResellerMinQty').value = p.resellerMinQty || '';
   document.getElementById('pCat').innerHTML = categories.map(c =>
     `<option value="${c.id}" ${c.id===p.categoryId?'selected':''}>${c.emoji} ${c.name}</option>`
   ).join('');
@@ -257,13 +259,24 @@ async function saveProduct() {
   const active   = document.getElementById('pActiveVal').value === '1';
   const stock    = document.getElementById('pStockVal').value === '1';
 
+  // Reseller pricing
+  const resellerPriceRaw  = document.getElementById('pResellerPrice').value;
+  const resellerMinQtyRaw = document.getElementById('pResellerMinQty').value;
+  const resellerPrice     = resellerPriceRaw  ? parseInt(resellerPriceRaw)  : null;
+  const resellerMinQty    = resellerMinQtyRaw ? parseInt(resellerMinQtyRaw) : null;
+
   if (!name || !price || !catId) { showToast('❗ Nama, kategori, dan harga wajib diisi!'); return; }
+  if (resellerPrice && resellerPrice >= price) { showToast('❗ Harga reseller harus lebih murah dari harga normal!'); return; }
+  if (resellerPrice && (!resellerMinQty || resellerMinQty < 1)) { showToast('❗ Isi minimum pembelian untuk harga reseller!'); return; }
 
   const btn = document.querySelector('#productModal .modal-footer .btn-primary');
   btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
   try {
     const id = editingProductId || DB.genId();
-    await DB.saveProduct({ id, categoryId:catId, name, desc, price, emoji, imageUrl, active, stock });
+    const productData = { id, categoryId:catId, name, desc, price, emoji, imageUrl, active, stock };
+    if (resellerPrice) { productData.resellerPrice = resellerPrice; productData.resellerMinQty = resellerMinQty; }
+    else { productData.resellerPrice = null; productData.resellerMinQty = null; }
+    await DB.saveProduct(productData);
     closeModal('productModal');
     renderProducts();
     showToast(editingProductId ? '✅ Produk diperbarui!' : '✅ Produk ditambahkan!');
