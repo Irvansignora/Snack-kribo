@@ -356,8 +356,25 @@
       <div class="form-grid">
         <div class="form-group full"><label class="form-label">Nama Produk *</label><input class="form-control" id="pName" type="text" placeholder="Kripik Cokelat"/></div>
         <div class="form-group full"><label class="form-label">Deskripsi</label><textarea class="form-control" id="pDesc" placeholder="Deskripsi singkat produk..."></textarea></div>
-        <div class="form-group"><label class="form-label">Harga (Rp) *</label><input class="form-control" id="pPrice" type="number" min="0" placeholder="5000"/></div>
+        <div class="form-group"><label class="form-label">Harga Normal (Rp) *</label><input class="form-control" id="pPrice" type="number" min="0" placeholder="5000"/></div>
         <div class="form-group"><label class="form-label">Kategori *</label><select class="form-control" id="pCat"></select></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div style="background:#FFF8E1;border:1.5px solid #FFD93D;border-radius:12px;padding:16px 18px">
+            <div style="font-weight:800;font-size:0.9rem;color:#B45309;margin-bottom:12px">🏪 Harga Reseller (Opsional)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div>
+                <label class="form-label">Harga Reseller (Rp)</label>
+                <input class="form-control" id="pResellerPrice" type="number" min="0" placeholder="Contoh: 3500"/>
+                <div style="font-size:0.75rem;color:#92400E;margin-top:4px">💡 Harga lebih murah untuk reseller</div>
+              </div>
+              <div>
+                <label class="form-label">Min. Pembelian (pcs)</label>
+                <input class="form-control" id="pResellerMinQty" type="number" min="1" placeholder="Contoh: 10"/>
+                <div style="font-size:0.75rem;color:#92400E;margin-top:4px">💡 Qty minimum untuk dapat harga reseller</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-group full">
           <label class="form-label">📷 Foto Produk (Cloudinary)</label>
           <div id="imagePreviewWrap" style="margin-bottom:10px"></div>
