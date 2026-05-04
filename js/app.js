@@ -167,8 +167,11 @@ function renderProducts() {
     const item = cart.find(c => c.id === p.id);
     const qty  = item ? item.qty : 0;
 
-    // Kalau ada imageUrl → tampil gambar penuh, emoji dihapus sama sekali
-    // Kalau tidak ada imageUrl → tampil emoji sebagai fallback
+    // Hitung harga aktif berdasarkan qty di cart
+    const activePrice = getActivePrice(p, qty);
+    const isResellerActive = p.resellerPrice && qty >= p.resellerMinQty;
+    const hasReseller = p.resellerPrice && p.resellerMinQty;
+
     const mediaHtml = p.imageUrl
       ? `<img
            src="${CLOUDINARY.thumb(p.imageUrl, 400)}"
@@ -179,6 +182,14 @@ function renderProducts() {
          >`
       : `<span class="product-emoji-fallback">${p.emoji}</span>`;
 
+    const resellerBadge = hasReseller
+      ? `<div class="reseller-badge">🏪 Reseller: ${DB.formatRupiah(p.resellerPrice)} (min ${p.resellerMinQty} pcs)</div>`
+      : '';
+
+    const priceHtml = isResellerActive
+      ? `<span class="product-price reseller-active">${DB.formatRupiah(p.resellerPrice)} <s style="font-size:0.75rem;opacity:0.5;font-weight:400">${DB.formatRupiah(p.price)}</s></span>`
+      : `<span class="product-price">${DB.formatRupiah(p.price)}</span>`;
+
     return `<div class="product-card ${!p.stock?'out-of-stock':''}" style="animation-delay:${i*0.04}s">
       <div class="product-img-wrap">
         ${mediaHtml}
@@ -187,8 +198,9 @@ function renderProducts() {
       <div class="product-info">
         <div class="product-name">${p.name}</div>
         <div class="product-desc">${p.desc}</div>
+        ${resellerBadge}
         <div class="product-footer">
-          <span class="product-price">${DB.formatRupiah(p.price)}</span>
+          ${priceHtml}
           ${qty === 0
             ? `<button class="add-btn" ${!p.stock?'disabled':''} onclick="addToCart('${p.id}')">+</button>`
             : `<div class="qty-ctrl">
@@ -203,6 +215,21 @@ function renderProducts() {
   }).join('');
 }
 
+// ---- RESELLER PRICE HELPER ----
+function getActivePrice(p, qty) {
+  if (p.resellerPrice && p.resellerMinQty && qty >= p.resellerMinQty) return p.resellerPrice;
+  return p.price;
+}
+
+// Recalculate prices for all items in cart based on current qty
+function recalcCartPrices(cart) {
+  return cart.map(item => {
+    const p = allProducts.find(x => x.id === item.id);
+    if (!p) return item;
+    return { ...item, price: getActivePrice(p, item.qty) };
+  });
+}
+
 // ---- CART ----
 function addToCart(id) {
   const p = allProducts.find(x => x.id === id);
@@ -210,7 +237,8 @@ function addToCart(id) {
   let cart = DB.getCart();
   const idx = cart.findIndex(c => c.id === id);
   if (idx >= 0) cart[idx].qty++;
-  else cart.push({ id:p.id, name:p.name, price:p.price, emoji:p.emoji, qty:1 });
+  else cart.push({ id:p.id, name:p.name, price:p.price, emoji:p.emoji, imageUrl:p.imageUrl||'', qty:1 });
+  cart = recalcCartPrices(cart);
   DB.saveCart(cart);
   updateCartBadge();
   renderProducts();
@@ -223,6 +251,7 @@ function changeQty(id, delta) {
   if (idx < 0) return;
   cart[idx].qty += delta;
   if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  cart = recalcCartPrices(cart);
   DB.saveCart(cart);
   updateCartBadge();
   renderProducts();
@@ -264,10 +293,21 @@ async function renderCartPage() {
 
   list.innerHTML = cart.map(item => {
     const p = allProducts.find(x => x.id === item.id) || item;
+    const isResellerPrice = p.resellerPrice && item.price === p.resellerPrice;
+    const needMoreForReseller = p.resellerPrice && p.resellerMinQty && !isResellerPrice;
+    const remainForReseller = needMoreForReseller ? p.resellerMinQty - item.qty : 0;
+
     const imgHtml = p.imageUrl 
       ? `<img src="${CLOUDINARY.mini(p.imageUrl, 80)}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">` 
       : '';
     const emojiHtml = `<span style="${p.imageUrl?'display:none':''}">${item.emoji}</span>`;
+
+    const resellerInfo = isResellerPrice
+      ? `<div style="font-size:0.72rem;color:#16A34A;font-weight:800;margin-top:3px">✅ Harga Reseller Aktif!</div>`
+      : remainForReseller > 0
+        ? `<div style="font-size:0.72rem;color:#B45309;font-weight:700;margin-top:3px">🏪 Tambah ${remainForReseller} lagi → Harga Reseller ${DB.formatRupiah(p.resellerPrice)}</div>`
+        : '';
+
     return `
     <div class="cart-item">
       <div class="cart-emoji" style="position:relative; width:45px; height:45px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -276,6 +316,7 @@ async function renderCartPage() {
       <div class="cart-info">
         <div class="cart-name">${item.name}</div>
         <div class="cart-price">${DB.formatRupiah(item.price)} × ${item.qty} = ${DB.formatRupiah(item.price*item.qty)}</div>
+        ${resellerInfo}
       </div>
       <div class="qty-ctrl">
         <button class="qty-btn" onclick="cartQty('${item.id}',-1)">−</button>
@@ -306,6 +347,7 @@ function cartQty(id, delta) {
   if (idx < 0) return;
   cart[idx].qty += delta;
   if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  cart = recalcCartPrices(cart);
   DB.saveCart(cart);
   updateCartBadge();
   renderCartPage();
