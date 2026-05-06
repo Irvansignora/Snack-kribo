@@ -8,7 +8,22 @@
   <title>Affiliate Dashboard - Snack Kribo</title>
   <link rel="stylesheet" href="/css/landing.css"/>
   <style>
-    body { background:var(--dark); min-height:100vh; }
+    /* ── Dark-theme variables (tidak ada di landing.css) ── */
+    :root {
+      --dark:  #0A0A14;
+      --dark2: #0F0F1E;
+      --dark3: #131326;
+      --dark4: #1A1A2E;
+      --white2: rgba(255,255,255,0.85);
+      --white3: rgba(255,255,255,0.55);
+      --white4: rgba(255,255,255,0.3);
+      --glass:  rgba(255,255,255,0.07);
+      --glass2: rgba(255,255,255,0.1);
+      --gold:   #FFD93D;
+      --pink-glow: rgba(233,30,140,0.35);
+      --font: 'Poppins', sans-serif;
+    }
+    body { background:var(--dark); min-height:100vh; color:#fff; }
     .aff-nav {
       position:sticky; top:0; z-index:100; padding:14px 24px;
       background:rgba(10,10,20,0.95); backdrop-filter:blur(20px);
@@ -85,6 +100,22 @@
     .btn-tg-share { background:#0088CC; color:#fff; }
     .btn-tw-share { background:#1DA1F2; color:#fff; }
     .btn-share:hover { transform:translateY(-2px); }
+    .btn-withdraw {
+      display:flex; align-items:center; gap:10px; width:100%;
+      padding:16px 24px; border-radius:16px; border:2px solid var(--gold);
+      background:rgba(255,217,61,0.08); color:var(--gold);
+      font-family:var(--font); font-weight:800; font-size:0.95rem;
+      cursor:pointer; transition:all 0.3s; margin-top:16px; justify-content:center;
+    }
+    .btn-withdraw:hover { background:rgba(255,217,61,0.18); transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,217,61,0.15); }
+    .btn-withdraw:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+    .withdraw-card {
+      background:linear-gradient(135deg,rgba(255,217,61,0.08),rgba(255,217,61,0.03));
+      border:1.5px solid rgba(255,217,61,0.3); border-radius:20px; padding:24px; margin-bottom:20px;
+    }
+    .withdraw-card h2 { font-size:1.1rem; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:var(--gold); }
+    .withdraw-amount { font-size:2.2rem; font-weight:900; color:var(--gold); margin:12px 0 4px; }
+    .withdraw-min-note { font-size:0.78rem; color:var(--white3); }
     .orders-table { width:100%; border-collapse:collapse; }
     .orders-table th {
       font-size:0.72rem; font-weight:800; text-transform:uppercase;
@@ -231,16 +262,38 @@ async function renderDashboard() {
         <input type="text" id="refLinkInput" value="${shopUrl}" readonly/>
         <button class="btn-copy" onclick="copyRefLink()">📋 Salin</button>
       </div>
-      <p style="font-size:0.82rem;color:var(--white3);margin-bottom:16px">
+      <p style="font-size:0.82rem;color:var(--white3);margin-bottom:12px">
         Kode: <strong style="color:var(--gold)">${userData.affiliateCode}</strong> • 
         Komisi: <strong style="color:var(--green)">${commRate}%</strong> per transaksi
       </p>
+      <p style="font-size:0.82rem;color:var(--white3);margin-bottom:14px;font-weight:600">📤 Bagikan ke:</p>
       <div class="share-btns">
         <button class="btn-share btn-wa-share" onclick="shareWA()">💬 WhatsApp</button>
         <button class="btn-share btn-tg-share" onclick="shareTG()">📨 Telegram</button>
         <button class="btn-share btn-tw-share" onclick="shareTW()">🐦 Twitter/X</button>
       </div>
     </div>
+
+    ${pendingPayout > 0 ? `
+    <div class="withdraw-card">
+      <h2>🏦 Pencairan Komisi</h2>
+      <p style="font-size:0.82rem;color:var(--white3)">Komisi tersedia untuk dicairkan:</p>
+      <div class="withdraw-amount">${DB.formatRupiah(pendingPayout)}</div>
+      ${userData.payoutRequested
+        ? `<p class="withdraw-min-note" style="color:var(--gold)">⏳ Request pencairan sudah dikirim ke admin. Harap tunggu konfirmasi pembayaran.</p>
+           <button class="btn-withdraw" disabled>⏳ Menunggu Konfirmasi Admin</button>`
+        : pendingPayout < (settings.affiliateMinPayout || 50000)
+          ? `<p class="withdraw-min-note">⚠️ Minimum pencairan ${DB.formatRupiah(settings.affiliateMinPayout || 50000)}. Kamu butuh <strong style="color:var(--gold)">${DB.formatRupiah((settings.affiliateMinPayout || 50000) - pendingPayout)}</strong> lagi.</p>
+             <button class="btn-withdraw" disabled>💸 Tarik Komisi (Belum Mencapai Minimum)</button>`
+          : `<p class="withdraw-min-note" style="color:#4ade80">✅ Sudah bisa dicairkan! Klik tombol di bawah untuk request pencairan.</p>
+             <button class="btn-withdraw" onclick="requestWithdraw(${pendingPayout})">💸 Tarik Komisi Sekarang</button>`
+      }
+    </div>` : `
+    <div class="withdraw-card" style="opacity:0.7">
+      <h2>🏦 Pencairan Komisi</h2>
+      <div class="withdraw-amount">Rp 0</div>
+      <p class="withdraw-min-note">Belum ada komisi yang bisa dicairkan. Bagikan link referral kamu untuk mulai mengumpulkan komisi!</p>
+    </div>`}
 
     <div class="aff-card">
       <h2>📦 Riwayat Pesanan Referral</h2>
@@ -273,7 +326,27 @@ async function renderDashboard() {
     </div>`;
 }
 
-window.copyRefLink = function() {
+window.requestWithdraw = async function(amount) {
+  const btn = document.querySelector('.btn-withdraw');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Memproses...'; }
+  try {
+    await DB.updateUserData(currentUser.uid, {
+      payoutRequested: true,
+      payoutRequestedAt: Date.now(),
+      payoutRequestedAmount: amount,
+    });
+    // Re-fetch userData
+    userData = await DB.getUserData(currentUser.uid);
+    renderDashboard();
+    alert('✅ Request pencairan berhasil dikirim! Admin akan segera memproses pembayaran komisi kamu.');
+  } catch(e) {
+    console.error(e);
+    alert('❌ Gagal request pencairan. Coba lagi.');
+    if (btn) { btn.disabled = false; btn.textContent = '💸 Tarik Komisi Sekarang'; }
+  }
+};
+
+
   const input = document.getElementById('refLinkInput');
   input.select();
   navigator.clipboard.writeText(input.value).then(() => {
