@@ -875,8 +875,12 @@ async function renderAffiliates() {
     tbody.innerHTML = affiliates.map(a => {
       const hasPayout = (a.pendingPayout||0) > 0;
       const hasRequest = !!a.payoutRequested;
+      const payoutDetail = hasRequest && a.payoutAccount
+        ? `<div style="font-size:0.7rem;color:var(--text3);margin-top:3px">${a.payoutMethod||''}<br>${a.payoutAccountName||''} • ${a.payoutAccount||''}</div>`
+        : '';
       const payoutCell = hasPayout
         ? `<span style="color:${hasRequest?'#FFD93D':'#4ade80'};font-weight:800">${DB.formatRupiah(a.pendingPayout)}</span>${hasRequest?' <span style="font-size:0.7rem;background:rgba(255,217,61,0.15);color:#FFD93D;padding:2px 7px;border-radius:8px;font-weight:700">REQ</span>':''}`
+          + payoutDetail
         : `<span style="color:var(--text3)">Rp 0</span>`;
       return `
       <tr style="${hasRequest?'background:rgba(255,217,61,0.04)':''}">
@@ -890,7 +894,7 @@ async function renderAffiliates() {
         <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           ${!a.affiliateApproved ? `<button class="btn btn-sm btn-success" onclick="approveAff('${a.uid||a.id}')">✅ Setujui</button>` : ''}
           <button class="btn btn-sm btn-danger" onclick="rejectAff('${a.uid||a.id}')" style="margin-left:0">❌</button>
-          ${hasPayout ? `<button class="btn btn-sm ${hasRequest?'btn-warning':'btn-ghost'}" onclick="payoutAff('${a.uid||a.id}',${a.pendingPayout},'${a.name||a.email||'-'}')" style="margin-left:0">
+          ${hasPayout ? `<button class="btn btn-sm ${hasRequest?'btn-warning':'btn-ghost'}" onclick="payoutAff('${a.uid||a.id}',${a.pendingPayout},'${a.name||a.email||'-'}','${a.payoutMethod||''}','${a.payoutAccount||''}','${a.payoutAccountName||''}')" style="margin-left:0">
             💸 Bayar ${DB.formatRupiah(a.pendingPayout)}
           </button>` : ''}
         </td>
@@ -911,19 +915,27 @@ async function rejectAff(uid) {
   catch(e) { showToast('❌ Gagal menolak'); }
 }
 
-async function payoutAff(uid, amount, name) {
+async function payoutAff(uid, amount, name, method, account, accountName) {
   const label = name ? ` untuk ${name}` : '';
-  if (!confirm(`Konfirmasi pembayaran komisi ${DB.formatRupiah(amount)}${label}?\n\nPastikan transfer sudah dilakukan sebelum mengklik OK.`)) return;
+  const detailLines = [];
+  if (method) detailLines.push('Metode: ' + method);
+  if (accountName) detailLines.push('Atas nama: ' + accountName);
+  if (account) detailLines.push('No. Rekening/HP: ' + account);
+  const detail = detailLines.length ? '\n\n📋 Detail Rekening:\n' + detailLines.join('\n') : '\n\n⚠️ Affiliator belum mengisi detail rekening.';
+  if (!confirm('Konfirmasi pembayaran komisi ' + DB.formatRupiah(amount) + label + '?' + detail + '\n\nPastikan transfer sudah dilakukan sebelum mengklik OK.')) return;
   try {
     await DB.updateUserData(uid, {
       pendingPayout: 0,
       payoutRequested: false,
       payoutRequestedAmount: 0,
+      payoutMethod: '',
+      payoutAccount: '',
+      payoutAccountName: '',
       lastPaidAt: Date.now(),
       lastPaidAmount: amount,
     });
     renderAffiliates();
-    showToast(`✅ Pembayaran ${DB.formatRupiah(amount)} dicatat!`);
+    showToast('✅ Pembayaran ' + DB.formatRupiah(amount) + ' dicatat!');
   } catch(e) { showToast('❌ Gagal memproses pembayaran'); }
 }
 
