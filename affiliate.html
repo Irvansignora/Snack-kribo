@@ -198,6 +198,30 @@ async function initAffiliate() {
   }
 }
 
+function renderWithdrawEmpty() {
+  return '<div class="withdraw-card" style="opacity:0.7"><h2>🏦 Pencairan Komisi</h2><div class="withdraw-amount">Rp 0</div><p class="withdraw-min-note">Belum ada komisi yang bisa dicairkan. Bagikan link referral kamu untuk mulai mengumpulkan komisi!</p></div>';
+}
+
+function renderWithdrawCard(pendingPayout, userData, settings) {
+  const minPayout = (settings && settings.affiliateMinPayout) || 50000;
+  let actionHtml;
+  if (userData.payoutRequested) {
+    actionHtml = '<p class="withdraw-min-note" style="color:var(--gold)">⏳ Request pencairan sudah dikirim ke admin. Harap tunggu konfirmasi pembayaran.</p>'
+      + '<button class="btn-withdraw" disabled>⏳ Menunggu Konfirmasi Admin</button>';
+  } else if (pendingPayout < minPayout) {
+    const kurang = DB.formatRupiah(minPayout - pendingPayout);
+    actionHtml = '<p class="withdraw-min-note">⚠️ Minimum pencairan ' + DB.formatRupiah(minPayout) + '. Kamu butuh <strong style="color:var(--gold)">' + kurang + '</strong> lagi.</p>'
+      + '<button class="btn-withdraw" disabled>💸 Tarik Komisi (Belum Mencapai Minimum)</button>';
+  } else {
+    actionHtml = '<p class="withdraw-min-note" style="color:#4ade80">✅ Sudah bisa dicairkan! Klik tombol di bawah untuk request pencairan.</p>'
+      + '<button class="btn-withdraw" onclick="requestWithdraw(' + pendingPayout + ')">💸 Tarik Komisi Sekarang</button>';
+  }
+  return '<div class="withdraw-card"><h2>🏦 Pencairan Komisi</h2>'
+    + '<p style="font-size:0.82rem;color:var(--white3)">Komisi tersedia untuk dicairkan:</p>'
+    + '<div class="withdraw-amount">' + DB.formatRupiah(pendingPayout) + '</div>'
+    + actionHtml + '</div>';
+}
+
 async function renderDashboard() {
   const content = document.getElementById('affContent');
   const settings = await DB.getSettings();
@@ -274,26 +298,7 @@ async function renderDashboard() {
       </div>
     </div>
 
-    ${pendingPayout > 0 ? `
-    <div class="withdraw-card">
-      <h2>🏦 Pencairan Komisi</h2>
-      <p style="font-size:0.82rem;color:var(--white3)">Komisi tersedia untuk dicairkan:</p>
-      <div class="withdraw-amount">${DB.formatRupiah(pendingPayout)}</div>
-      ${userData.payoutRequested
-        ? `<p class="withdraw-min-note" style="color:var(--gold)">⏳ Request pencairan sudah dikirim ke admin. Harap tunggu konfirmasi pembayaran.</p>
-           <button class="btn-withdraw" disabled>⏳ Menunggu Konfirmasi Admin</button>`
-        : pendingPayout < (settings.affiliateMinPayout || 50000)
-          ? `<p class="withdraw-min-note">⚠️ Minimum pencairan ${DB.formatRupiah(settings.affiliateMinPayout || 50000)}. Kamu butuh <strong style="color:var(--gold)">${DB.formatRupiah((settings.affiliateMinPayout || 50000) - pendingPayout)}</strong> lagi.</p>
-             <button class="btn-withdraw" disabled>💸 Tarik Komisi (Belum Mencapai Minimum)</button>`
-          : `<p class="withdraw-min-note" style="color:#4ade80">✅ Sudah bisa dicairkan! Klik tombol di bawah untuk request pencairan.</p>
-             <button class="btn-withdraw" onclick="requestWithdraw(${pendingPayout})">💸 Tarik Komisi Sekarang</button>`
-      }
-    </div>` : `
-    <div class="withdraw-card" style="opacity:0.7">
-      <h2>🏦 Pencairan Komisi</h2>
-      <div class="withdraw-amount">Rp 0</div>
-      <p class="withdraw-min-note">Belum ada komisi yang bisa dicairkan. Bagikan link referral kamu untuk mulai mengumpulkan komisi!</p>
-    </div>`}
+    ${pendingPayout > 0 ? renderWithdrawCard(pendingPayout, userData, settings) : renderWithdrawEmpty()}
 
     <div class="aff-card">
       <h2>📦 Riwayat Pesanan Referral</h2>
@@ -347,6 +352,7 @@ window.requestWithdraw = async function(amount) {
 };
 
 
+window.copyRefLink = function() {
   const input = document.getElementById('refLinkInput');
   input.select();
   navigator.clipboard.writeText(input.value).then(() => {
