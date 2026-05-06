@@ -116,6 +116,43 @@
     .withdraw-card h2 { font-size:1.1rem; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:var(--gold); }
     .withdraw-amount { font-size:2.2rem; font-weight:900; color:var(--gold); margin:12px 0 4px; }
     .withdraw-min-note { font-size:0.78rem; color:var(--white3); }
+    /* ── Withdraw Modal ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75);
+      z-index:999; align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-overlay.active { display:flex; }
+    .modal-box {
+      background:#1a1a2e; border:1.5px solid rgba(255,217,61,0.3);
+      border-radius:24px; padding:28px 24px; width:100%; max-width:440px;
+      animation:modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-box h3 { font-size:1.1rem; font-weight:800; color:var(--gold); margin-bottom:4px; }
+    .modal-box .modal-sub { font-size:0.8rem; color:var(--white3); margin-bottom:20px; }
+    .modal-field { margin-bottom:14px; }
+    .modal-field label { display:block; font-size:0.78rem; font-weight:700; color:var(--white3); margin-bottom:6px; }
+    .modal-field select, .modal-field input {
+      width:100%; padding:12px 14px; border-radius:12px;
+      background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.12);
+      color:#fff; font-family:var(--font); font-size:0.9rem; box-sizing:border-box;
+    }
+    .modal-field select:focus, .modal-field input:focus {
+      outline:none; border-color:var(--gold);
+    }
+    .modal-field select option { background:#1a1a2e; color:#fff; }
+    .modal-actions { display:flex; gap:10px; margin-top:20px; }
+    .modal-btn-cancel {
+      flex:1; padding:14px; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15);
+      background:transparent; color:var(--white3); font-family:var(--font);
+      font-weight:700; cursor:pointer; font-size:0.9rem;
+    }
+    .modal-btn-submit {
+      flex:2; padding:14px; border-radius:12px; border:none;
+      background:var(--gold); color:#1a1a00; font-family:var(--font);
+      font-weight:800; cursor:pointer; font-size:0.9rem;
+    }
+    .modal-btn-submit:disabled { opacity:0.5; cursor:not-allowed; }
     .orders-table { width:100%; border-collapse:collapse; }
     .orders-table th {
       font-size:0.72rem; font-weight:800; text-transform:uppercase;
@@ -331,23 +368,48 @@ async function renderDashboard() {
     </div>`;
 }
 
-window.requestWithdraw = async function(amount) {
-  const btn = document.querySelector('.btn-withdraw');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Memproses...'; }
+let _withdrawAmount = 0;
+
+window.requestWithdraw = function(amount) {
+  _withdrawAmount = amount;
+  document.getElementById('withdrawAmountLabel').textContent = DB.formatRupiah(amount);
+  document.getElementById('payoutMethod').value = '';
+  document.getElementById('payoutAccount').value = '';
+  document.getElementById('payoutAccountName').value = '';
+  document.getElementById('withdrawModal').classList.add('active');
+};
+
+window.closeWithdrawModal = function() {
+  document.getElementById('withdrawModal').classList.remove('active');
+};
+
+window.submitWithdraw = async function() {
+  const method = document.getElementById('payoutMethod').value.trim();
+  const account = document.getElementById('payoutAccount').value.trim();
+  const accountName = document.getElementById('payoutAccountName').value.trim();
+  if (!method) { alert('⚠️ Pilih metode pembayaran dulu.'); return; }
+  if (!account) { alert('⚠️ Masukkan nomor rekening / nomor HP.'); return; }
+  if (!accountName) { alert('⚠️ Masukkan nama pemilik rekening.'); return; }
+
+  const btn = document.getElementById('withdrawSubmitBtn');
+  btn.disabled = true; btn.textContent = '⏳ Mengirim...';
   try {
     await DB.updateUserData(currentUser.uid, {
       payoutRequested: true,
       payoutRequestedAt: Date.now(),
-      payoutRequestedAmount: amount,
+      payoutRequestedAmount: _withdrawAmount,
+      payoutMethod: method,
+      payoutAccount: account,
+      payoutAccountName: accountName,
     });
-    // Re-fetch userData
+    closeWithdrawModal();
     userData = await DB.getUserData(currentUser.uid);
     renderDashboard();
-    alert('✅ Request pencairan berhasil dikirim! Admin akan segera memproses pembayaran komisi kamu.');
+    alert('✅ Request pencairan berhasil dikirim! Admin akan segera memproses pembayaran ke ' + method + ' atas nama ' + accountName + '.');
   } catch(e) {
     console.error(e);
-    alert('❌ Gagal request pencairan. Coba lagi.');
-    if (btn) { btn.disabled = false; btn.textContent = '💸 Tarik Komisi Sekarang'; }
+    alert('❌ Gagal mengirim request. Coba lagi.');
+    btn.disabled = false; btn.textContent = 'Kirim Request';
   }
 };
 
@@ -387,5 +449,41 @@ window.handleLogout = async function() {
 
 initAffiliate();
 </script>
+<!-- Withdraw Modal -->
+<div class="modal-overlay" id="withdrawModal">
+  <div class="modal-box">
+    <h3>💸 Request Pencairan Komisi</h3>
+    <p class="modal-sub">Isi data rekening/e-wallet untuk pencairan <strong id="withdrawAmountLabel" style="color:var(--gold)"></strong></p>
+    <div class="modal-field">
+      <label>Metode Pembayaran</label>
+      <select id="payoutMethod">
+        <option value="">-- Pilih Metode --</option>
+        <option value="Transfer Bank - BCA">🏦 Transfer Bank - BCA</option>
+        <option value="Transfer Bank - Mandiri">🏦 Transfer Bank - Mandiri</option>
+        <option value="Transfer Bank - BRI">🏦 Transfer Bank - BRI</option>
+        <option value="Transfer Bank - BNI">🏦 Transfer Bank - BNI</option>
+        <option value="Transfer Bank - BSI">🏦 Transfer Bank - BSI</option>
+        <option value="Transfer Bank - Lainnya">🏦 Transfer Bank - Lainnya</option>
+        <option value="GoPay">💚 GoPay</option>
+        <option value="OVO">💜 OVO</option>
+        <option value="DANA">💙 DANA</option>
+        <option value="ShopeePay">🧡 ShopeePay</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Nomor Rekening / Nomor HP (e-wallet)</label>
+      <input type="text" id="payoutAccount" placeholder="Contoh: 1234567890" inputmode="numeric"/>
+    </div>
+    <div class="modal-field">
+      <label>Nama Pemilik Rekening</label>
+      <input type="text" id="payoutAccountName" placeholder="Sesuai nama di rekening/e-wallet"/>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeWithdrawModal()">Batal</button>
+      <button class="modal-btn-submit" id="withdrawSubmitBtn" onclick="submitWithdraw()">Kirim Request</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
