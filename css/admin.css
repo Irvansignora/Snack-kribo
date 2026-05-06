@@ -269,6 +269,8 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .btn-primary:hover { background:var(--primary-dk); }
 .btn-success { background:var(--success); color:#FFFFFF; }
 .btn-danger  { background:var(--danger); color:#FFFFFF; }
+.btn-warning { background:#FFD93D; color:#1a1a00; font-weight:800; }
+.btn-warning:hover { background:#ffe566; }
 .btn-ghost {
   background:transparent;
   color:var(--text2);
