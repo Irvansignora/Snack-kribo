@@ -849,25 +849,53 @@ async function renderAffiliates() {
     const approved = affiliates.filter(a => a.affiliateApproved);
     const pending = affiliates.filter(a => !a.affiliateApproved);
     const totalComm = affiliates.reduce((s,a) => s + (a.totalCommission||0), 0);
+    const payoutReqs = affiliates.filter(a => a.payoutRequested);
     document.getElementById('statAffTotal').textContent = affiliates.length;
     document.getElementById('statAffApproved').textContent = approved.length;
     document.getElementById('statAffPending').textContent = pending.length;
     document.getElementById('statAffCommission').textContent = DB.formatRupiah(totalComm);
+
+    // Show payout request badge if any
+    const payoutBadge = payoutReqs.length > 0
+      ? `<div style="margin:0 0 16px;padding:12px 18px;background:rgba(255,217,61,0.1);border:1px solid rgba(255,217,61,0.35);border-radius:12px;font-size:0.85rem;color:#FFD93D;font-weight:700">
+          ⚠️ ${payoutReqs.length} affiliator request pencairan komisi — segera proses pembayaran!
+         </div>` : '';
+
     const tbody = document.getElementById('affiliatesTbody');
-    tbody.innerHTML = affiliates.map(a => `
-      <tr>
+    // Insert badge before table
+    const tableWrap = tbody.closest('.section-card');
+    let badgeEl = tableWrap.querySelector('#payoutBadge');
+    if (!badgeEl) {
+      badgeEl = document.createElement('div');
+      badgeEl.id = 'payoutBadge';
+      tableWrap.querySelector('.section-card-header').after(badgeEl);
+    }
+    badgeEl.innerHTML = payoutBadge;
+
+    tbody.innerHTML = affiliates.map(a => {
+      const hasPayout = (a.pendingPayout||0) > 0;
+      const hasRequest = !!a.payoutRequested;
+      const payoutCell = hasPayout
+        ? `<span style="color:${hasRequest?'#FFD93D':'#4ade80'};font-weight:800">${DB.formatRupiah(a.pendingPayout)}</span>${hasRequest?' <span style="font-size:0.7rem;background:rgba(255,217,61,0.15);color:#FFD93D;padding:2px 7px;border-radius:8px;font-weight:700">REQ</span>':''}`
+        : `<span style="color:var(--text3)">Rp 0</span>`;
+      return `
+      <tr style="${hasRequest?'background:rgba(255,217,61,0.04)':''}">
         <td><strong>${a.name||'-'}</strong></td>
         <td style="font-size:0.78rem">${a.email||'-'}</td>
         <td><strong style="color:var(--warning)">${a.affiliateCode||'-'}</strong></td>
         <td>${DB.formatRupiah(a.totalSales||0)}</td>
         <td>${DB.formatRupiah(a.totalCommission||0)}</td>
+        <td>${payoutCell}</td>
         <td><span class="badge ${a.affiliateApproved?'badge-active':'badge-pending'}">${a.affiliateApproved?'Disetujui':'Menunggu'}</span></td>
-        <td>
-          ${!a.affiliateApproved ? `<button class="btn btn-sm btn-success" onclick="approveAff('${a.uid}')">✅</button>` : ''}
-          <button class="btn btn-sm btn-danger" onclick="rejectAff('${a.uid}')" style="margin-left:4px">❌</button>
-          ${a.pendingPayout > 0 ? `<button class="btn btn-sm btn-ghost" onclick="payoutAff('${a.uid}',${a.pendingPayout})" style="margin-left:4px">💸 ${DB.formatRupiah(a.pendingPayout)}</button>` : ''}
+        <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          ${!a.affiliateApproved ? `<button class="btn btn-sm btn-success" onclick="approveAff('${a.uid||a.id}')">✅ Setujui</button>` : ''}
+          <button class="btn btn-sm btn-danger" onclick="rejectAff('${a.uid||a.id}')" style="margin-left:0">❌</button>
+          ${hasPayout ? `<button class="btn btn-sm ${hasRequest?'btn-warning':'btn-ghost'}" onclick="payoutAff('${a.uid||a.id}',${a.pendingPayout},'${a.name||a.email||'-'}')" style="margin-left:0">
+            💸 Bayar ${DB.formatRupiah(a.pendingPayout)}
+          </button>` : ''}
         </td>
-      </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Belum ada affiliate</td></tr>`;
+      </tr>`;
+    }).join('') || `<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Belum ada affiliate</td></tr>`;
   } catch(e) { showToast('❌ Gagal memuat affiliate'); console.error(e); }
 }
 
@@ -883,13 +911,22 @@ async function rejectAff(uid) {
   catch(e) { showToast('❌ Gagal menolak'); }
 }
 
-async function payoutAff(uid, amount) {
-  if (!confirm(`Tandai pencairan ${DB.formatRupiah(amount)} untuk affiliate ini?`)) return;
+async function payoutAff(uid, amount, name) {
+  const label = name ? ` untuk ${name}` : '';
+  if (!confirm(`Konfirmasi pembayaran komisi ${DB.formatRupiah(amount)}${label}?\n\nPastikan transfer sudah dilakukan sebelum mengklik OK.`)) return;
   try {
-    await DB.updateUserData(uid, { pendingPayout: 0 });
-    renderAffiliates(); showToast('✅ Pencairan dicatat!');
-  } catch(e) { showToast('❌ Gagal memproses'); }
+    await DB.updateUserData(uid, {
+      pendingPayout: 0,
+      payoutRequested: false,
+      payoutRequestedAmount: 0,
+      lastPaidAt: Date.now(),
+      lastPaidAmount: amount,
+    });
+    renderAffiliates();
+    showToast(`✅ Pembayaran ${DB.formatRupiah(amount)} dicatat!`);
+  } catch(e) { showToast('❌ Gagal memproses pembayaran'); }
 }
+
 
 // ---- Expose to global scope ----
 Object.assign(window, {
