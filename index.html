@@ -353,6 +353,12 @@ async function renderLanding() {
     if (s.logoUrl) {
       document.getElementById('navLogo').src = CLOUDINARY.thumb(s.logoUrl, 100);
       document.getElementById('navLogo').style.display = 'block';
+      // Update favicon dari logo toko
+      let favicon = document.querySelector("link[rel~='icon']");
+      if (!favicon) { favicon = document.createElement('link'); favicon.rel = 'icon'; document.head.appendChild(favicon); }
+      favicon.href = CLOUDINARY.thumb(s.logoUrl, 64);
+      favicon.type = 'image/png';
+    }
     }
     const brandWords = storeName.split(' ');
     const fmtName = brandWords.length > 1
