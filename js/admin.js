@@ -50,6 +50,13 @@ async function applyAdminTheme() {
   document.title = 'Admin – ' + s.storeName;
   document.getElementById('adminStoreName').textContent = '⚙️ ' + s.storeName;
   document.documentElement.style.setProperty('--primary', s.primaryColor || '#e8501a');
+  // Update favicon dari logo toko
+  if (s.logoUrl) {
+    let fav = document.querySelector("link[rel~='icon']");
+    if (!fav) { fav = document.createElement('link'); fav.rel = 'icon'; document.head.appendChild(fav); }
+    fav.href = s.logoUrl;
+    fav.type = 'image/png';
+  }
 }
 
 // ---- NAVIGATION ----
