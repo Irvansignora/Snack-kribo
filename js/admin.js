@@ -57,7 +57,44 @@ async function applyAdminTheme() {
     fav.href = s.logoUrl;
     fav.type = 'image/png';
   }
+  updatePWAManifest(s);
 }
+
+function updatePWAManifest(s) {
+  if (!s.logoUrl && !s.storeName) return;
+  const logoUrl = s.logoUrl || '/images/logo-kribo.png';
+  const manifest = {
+    name: s.storeName || 'Snack Kribo',
+    short_name: (s.storeName || 'Snack Kribo').split(' ').slice(0,2).join(' '),
+    description: (s.storeName || 'Snack Kribo') + ' - Toko Online',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#0A0A14',
+    theme_color: s.primaryColor || '#E91E8C',
+    orientation: 'portrait',
+    icons: [
+      { src: logoUrl, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: logoUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+    ],
+    categories: ['food', 'shopping', 'lifestyle']
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  let link = document.querySelector('link[rel="manifest"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'manifest'; document.head.appendChild(link); }
+  if (link._blobUrl) URL.revokeObjectURL(link._blobUrl);
+  link._blobUrl = url;
+  link.href = url;
+  // Update apple-touch-icon & theme-color
+  if (s.logoUrl) {
+    let atIcon = document.querySelector('link[rel="apple-touch-icon"]');
+    if (!atIcon) { atIcon = document.createElement('link'); atIcon.rel = 'apple-touch-icon'; document.head.appendChild(atIcon); }
+    atIcon.href = s.logoUrl;
+  }
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta && s.primaryColor) themeMeta.content = s.primaryColor;
+}
+window.updatePWAManifest = updatePWAManifest;
 
 // ---- NAVIGATION ----
 function showSection(name) {
@@ -818,6 +855,7 @@ async function saveSettings() {
   try {
     await DB.saveSettings(s);
     applyAdminTheme();
+    updatePWAManifest(s);
     document.documentElement.style.setProperty('--primary', s.primaryColor);
     showToast('✅ Pengaturan disimpan!');
   } catch(e) { showToast('❌ Gagal menyimpan'); }
