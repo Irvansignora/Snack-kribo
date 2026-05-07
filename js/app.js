@@ -81,6 +81,13 @@ async function applySettings() {
   document.title = s.storeName + ' - Belanja';
   const nameEl = document.getElementById('storeName');
   if (nameEl) nameEl.textContent = s.logoEmoji + ' ' + s.storeName;
+  // Update favicon dari logo toko
+  if (s.logoUrl) {
+    let favicon = document.querySelector("link[rel~='icon']");
+    if (!favicon) { favicon = document.createElement('link'); favicon.rel = 'icon'; document.head.appendChild(favicon); }
+    favicon.href = CLOUDINARY.thumb(s.logoUrl, 64);
+    favicon.type = 'image/png';
+  }
   const dot = document.getElementById('statusDot');
   const statusTxt = document.getElementById('statusTxt');
   if (s.isOpen) {
