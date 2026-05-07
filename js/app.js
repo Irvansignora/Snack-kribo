@@ -87,7 +87,34 @@ async function applySettings() {
     if (!favicon) { favicon = document.createElement('link'); favicon.rel = 'icon'; document.head.appendChild(favicon); }
     favicon.href = CLOUDINARY.thumb(s.logoUrl, 64);
     favicon.type = 'image/png';
+    let atIcon = document.querySelector('link[rel="apple-touch-icon"]');
+    if (!atIcon) { atIcon = document.createElement('link'); atIcon.rel = 'apple-touch-icon'; document.head.appendChild(atIcon); }
+    atIcon.href = s.logoUrl;
   }
+  // Update PWA manifest
+  const logoUrl = (s.logoUrl) || '/images/logo-kribo.png';
+  const name    = s.storeName || 'Snack Kribo';
+  const color   = s.primaryColor || '#E91E8C';
+  const manifest = {
+    name, short_name: name.split(' ').slice(0,2).join(' '),
+    description: name + ' - Toko Online',
+    start_url: '/', display: 'standalone',
+    background_color: '#0A0A14', theme_color: color, orientation: 'portrait',
+    icons: [
+      { src: logoUrl, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: logoUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+    ],
+    categories: ['food', 'shopping', 'lifestyle']
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  let mLink = document.querySelector('link[rel="manifest"]');
+  if (!mLink) { mLink = document.createElement('link'); mLink.rel = 'manifest'; document.head.appendChild(mLink); }
+  if (mLink._blobUrl) URL.revokeObjectURL(mLink._blobUrl);
+  mLink._blobUrl = url;
+  mLink.href = url;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.content = color;
   const dot = document.getElementById('statusDot');
   const statusTxt = document.getElementById('statusTxt');
   if (s.isOpen) {
