@@ -263,6 +263,13 @@ async function renderDashboard() {
   const content = document.getElementById('affContent');
   const settings = await DB.getSettings();
   const commRate = settings.affiliateCommission || 10;
+  // Update favicon dari logo toko
+  if (settings.logoUrl) {
+    let fav = document.querySelector("link[rel~='icon']");
+    if (!fav) { fav = document.createElement('link'); fav.rel = 'icon'; document.head.appendChild(fav); }
+    fav.href = CLOUDINARY.thumb(settings.logoUrl, 64);
+    fav.type = 'image/png';
+  }
 
   if (!userData.affiliateApproved) {
     content.innerHTML = `
