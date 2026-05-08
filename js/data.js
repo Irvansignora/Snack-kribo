@@ -50,36 +50,40 @@ const DEFAULTS = {
     hero: {
       badge: 'Kripiknya Bikin Nagih Bro!',
       titleHtml: 'Keripik Pisang<br/>\n        <span class="highlight">Premium</span> Rasa<br/>\n        <span class="gold">Istimewa!</span>',
-      subtitle: 'Dibuat dari 100% pisang pilihan terbaik, diproses dengan cinta tanpa pengawet & pewarna buatan. Renyah, manis, dan lumer di mulut — sekali gigit, pasti nagih! 🍌',
+      subtitle: 'Dibuat dari usus pilihan yang dibersihkan secara higienis, diproses dengan cinta tanpa pengawet & pewarna buatan. Renyah di luar, nikmat di dalam — sekali gigit, pasti nagih! 🌀',
       imageUrl: '' // Cloudinary URL
     },
     about: {
       titleHtml: 'Cerita di Balik <span style="color:var(--pink)">Snack Kribo</span>',
-      descHtml: '<p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik pisang berkualitas premium dengan rasa yang unik dan istimewa.</p><p>Setiap keripik dibuat dengan penuh cinta, menggunakan 100% pisang pilihan terbaik, diproses secara higienis tanpa pengawet dan pewarna buatan. Hasilnya? Kripik yang renyah maksimal, manis pas, dan lumer di mulut!</p>',
+      descHtml: '<p><strong>Snack Kribo</strong> — singkatan dari <em>Kripik Istimewa Bro</em> — lahir dari passion kami untuk menghadirkan keripik usus berkualitas premium dengan bumbu khas yang bikin ketagihan.</p><p>Setiap produk dibuat dengan penuh cinta, menggunakan usus pilihan yang dibersihkan secara higienis. Diproses tanpa pengawet dan pewarna buatan — renyah di luar, nikmat di dalam, bumbu meresap sempurna. Sekali coba pasti nagih! 🌀</p>',
       imageUrl: '', // Cloudinary URL
-      badges: ['🏆 Premium Quality', '💯 100% Natural', '🚀 Fast Delivery']
+      badges: ['🏆 Premium Quality', '💯 Usus Pilihan', '🚀 Fast Delivery', '✅ Tanpa Pengawet']
     },
     features: [
-      { icon: '🍌', title: '100% Pisang Pilihan', desc: 'Hanya menggunakan pisang berkualitas tinggi yang dipilih secara ketat' },
+      { icon: '🌀', title: 'Usus Pilihan Higienis', desc: 'Hanya menggunakan usus berkualitas yang dibersihkan dengan standar higienis tinggi' },
       { icon: '🌿', title: 'Tanpa Pengawet', desc: 'Proses produksi alami tanpa bahan pengawet kimia berbahaya' },
       { icon: '🧪', title: 'Tanpa Pewarna Buatan', desc: 'Warna alami dari bahan-bahan premium tanpa pewarna sintetis' },
       { icon: '❄️', title: 'Renyah Maksimal', desc: 'Tekstur renyah sempurna yang tahan lama, bikin nagih!' }
     ],
     testimonials: [
       { name: 'Andi Pratama', loc: 'Jakarta', rating: 5, text: '"Rasa cokelatnya beneran nendang! Udah abis 3 pack dalam sehari. Nagih banget bro! 🤤"', imageUrl: '' },
-      { name: 'Sari Dewi', loc: 'Bandung', rating: 5, text: '"Matcha-nya seger banget! Beda dari keripik pisang biasa. Packaging-nya juga kece! 💚"', imageUrl: '' },
-      { name: 'Rudi Setiawan', loc: 'Surabaya', rating: 5, text: '"Beli untuk oleh-oleh, semua orang suka! Apalagi rasa strawberry, anak-anak rebutan! 🍓"', imageUrl: '' }
+      { name: 'Sari Dewi', loc: 'Bandung', rating: 5, text: '"Rasa Pedas Jeruk Nipis-nya seger banget! Beda dari keripik usus biasa. Packaging-nya juga kece! 💚"', imageUrl: '' },
+      { name: 'Rudi Setiawan', loc: 'Surabaya', rating: 5, text: '"Beli untuk oleh-oleh, semua orang suka! Apalagi rasa Balado-nya, beneran nagih! 🌶️"', imageUrl: '' }
     ]
   },
   categories: [
-    { id:'cat1', name:'Kripik Pisang', emoji:'🍌', active:true },
-    { id:'cat2', name:'Paket Hemat', emoji:'📦', active:true },
+    { id:'cat1', name:'Keripik Usus', emoji:'🌀', active:true },
+    { id:'cat2', name:'Keripik Pisang', emoji:'🍌', active:true },
+    { id:'cat3', name:'Paket Hemat', emoji:'📦', active:true },
   ],
   products: [
-    { id:'p1', categoryId:'cat1', name:'Kripik Cokelat', desc:'Renyah, manis & lumer di mulut! Cokelatnya nendang banget!', price:5000, emoji:'🍫', imageUrl:'', active:true, stock:true },
-    { id:'p2', categoryId:'cat1', name:'Kripik Matcha', desc:'Renyah, manis & lumer di mulut! Rasa matcha yang nendang banget!', price:5000, emoji:'🍵', imageUrl:'', active:true, stock:true },
-    { id:'p3', categoryId:'cat1', name:'Kripik Vanila', desc:'Renyah, manis & lumer di mulut! Vanila klasik yang nendang banget!', price:5000, emoji:'🍌', imageUrl:'', active:true, stock:true },
-    { id:'p4', categoryId:'cat1', name:'Kripik Strawberry', desc:'Renyah, manis & lumer di mulut! Strawberry segar yang nendang banget!', price:5000, emoji:'🍓', imageUrl:'', active:true, stock:true },
+    { id:'p1', categoryId:'cat1', name:'Keripik Usus Original', desc:'Rasa original, gurihnya nendang bro', price:15000, emoji:'🌀', imageUrl:'', active:true, stock:true, landingBadge:'❤️ Paling Favorit!' },
+    { id:'p2', categoryId:'cat1', name:'Keripik Usus Pedas Jeruk Nipis', desc:'Pedasnya nampol bro', price:15000, emoji:'🌶️', imageUrl:'', active:true, stock:true, landingBadge:'⭐ Paling Unik!' },
+    { id:'p3', categoryId:'cat1', name:'Keripik Usus Balado', desc:'Rasa Pedas, manis, gurih yang akan bikin lu ketagihan bro..', price:15000, emoji:'🔥', imageUrl:'', active:true, stock:true, landingBadge:'🌶️ Paling Pedas!' },
+    { id:'p4', categoryId:'cat2', name:'Kripik Cokelat', desc:'Renyah, manis & lumer di mulut! Cokelatnya nendang banget!', price:15000, emoji:'🍫', imageUrl:'', active:true, stock:true, landingBadge:'💥 Paling Renyah!' },
+    { id:'p5', categoryId:'cat2', name:'Kripik Vanila', desc:'Renyah, manis & lumer di mulut! Vanila klasik yang nendang banget!', price:15000, emoji:'🍌', imageUrl:'', active:true, stock:true, landingBadge:'🌟 Paling Wangi!' },
+    { id:'p6', categoryId:'cat2', name:'Kripik Matcha', desc:'Renyah, manis & lumer di mulut! Rasa matcha yang nendang banget!', price:15000, emoji:'🍵', imageUrl:'', active:true, stock:true, landingBadge:'💚 Paling Hits!' },
+    { id:'p7', categoryId:'cat2', name:'Kripik Strawberry', desc:'Renyah, manis & lumer di mulut! Strawberry segar yang nendang banget!', price:15000, emoji:'🍓', imageUrl:'', active:true, stock:true, landingBadge:'🍓 Paling Seger!' },
   ],
   banners: [
     { id:'b1', text:'🔥 Snack Kribo — Kripik Istimewa Bro! Renyah & Nagih!', color:'#E91E8C', active:true },
