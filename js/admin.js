@@ -3,7 +3,6 @@
 // ============================================================
 
 let currentSection = 'dashboard';
-const ADMIN_PASS_KEY = 'kribo_admin_auth';
 
 // ---- SECURITY: escape user input before inserting into innerHTML ----
 function esc(str) {
@@ -16,40 +15,89 @@ function esc(str) {
     .replace(/'/g, '&#39;');
 }
 
-// ---- SECURITY: checkAuth — validasi password + simpan hash di sessionStorage ----
-async function checkAuth() {
-  // DB.init() sudah selesai sebelum fungsi ini dipanggil (lihat initAdmin)
-  const s = await DB.getSettings();
-  const correctPass = s.adminPass || 'admin123';
-  const stored = sessionStorage.getItem(ADMIN_PASS_KEY);
+// ---- SECURITY: Firebase Auth login form untuk admin ----
+function showLoginOverlay() {
+  // Hapus overlay lama kalau ada
+  const old = document.getElementById('adminLoginOverlay');
+  if (old) old.remove();
 
-  if (stored) {
-    // Validasi hash yang tersimpan agar tidak bisa di-bypass manual via DevTools
-    const expected = await _hashPass(correctPass);
-    if (stored === expected) return true;
-    sessionStorage.removeItem(ADMIN_PASS_KEY); // hapus token palsu/lama
-  }
+  const overlay = document.createElement('div');
+  overlay.id = 'adminLoginOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:inherit';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:36px 32px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:2rem;margin-bottom:8px">🔐</div>
+        <div style="font-weight:800;font-size:1.2rem;color:#1a1a2e">Admin Login</div>
+        <div style="font-size:0.82rem;color:#888;margin-top:4px">Masuk dengan akun admin Firebase kamu</div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:0.82rem;font-weight:600;color:#444;display:block;margin-bottom:6px">Email</label>
+        <input id="adminEmailInput" type="email" placeholder="admin@email.com"
+          style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:0.95rem;box-sizing:border-box;outline:none"
+          autocomplete="email"/>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="font-size:0.82rem;font-weight:600;color:#444;display:block;margin-bottom:6px">Password</label>
+        <input id="adminPassInput" type="password" placeholder="••••••••"
+          style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:0.95rem;box-sizing:border-box;outline:none"
+          autocomplete="current-password"/>
+      </div>
+      <div id="adminLoginError" style="display:none;color:#c0392b;font-size:0.82rem;margin-bottom:12px;text-align:center;background:#ffeaea;padding:8px;border-radius:6px"></div>
+      <button id="adminLoginBtn" onclick="doAdminLogin()"
+        style="width:100%;padding:12px;background:#E91E8C;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer">
+        Masuk
+      </button>
+    </div>`;
+  document.body.appendChild(overlay);
 
-  const pw = prompt('🔐 Masukkan password admin:');
-  if (!pw) { window.location.href = '/'; return false; }
-  if (pw !== correctPass) {
-    alert('Password salah!'); window.location.href = '/'; return false;
-  }
-  sessionStorage.setItem(ADMIN_PASS_KEY, await _hashPass(pw));
-  return true;
+  // Enter key support
+  overlay.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAdminLogin(); });
+  });
+  setTimeout(() => document.getElementById('adminEmailInput')?.focus(), 100);
 }
 
-async function _hashPass(pass) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('kribo_salt_' + pass));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+async function doAdminLogin() {
+  const email = document.getElementById('adminEmailInput')?.value?.trim();
+  const pass  = document.getElementById('adminPassInput')?.value;
+  const errEl = document.getElementById('adminLoginError');
+  const btn   = document.getElementById('adminLoginBtn');
+  if (!email || !pass) { errEl.textContent = 'Email dan password wajib diisi'; errEl.style.display='block'; return; }
+  btn.disabled = true; btn.textContent = '⏳ Masuk...';
+  errEl.style.display = 'none';
+  try {
+    await DB.adminLogin(email, pass);
+    document.getElementById('adminLoginOverlay')?.remove();
+    showAdminLoading(true);
+    await applyAdminTheme();
+    showSection('dashboard');
+    showAdminLoading(false);
+  } catch(e) {
+    const msg = e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found'
+      ? 'Email atau password salah' : 'Gagal login. Cek koneksi internet.';
+    errEl.textContent = msg; errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Masuk';
+  }
+}
+
+async function adminLogout() {
+  if (!confirm('Yakin ingin keluar?')) return;
+  await DB.logout();
+  window.location.reload();
 }
 
 async function initAdmin() {
   showAdminLoading(true);
   try {
     await DB.init();
-    const ok = await checkAuth();
-    if (!ok) return;
+    // Tunggu Firebase Auth resolve session (penting! getCurrentUser() null sebelum ini)
+    const user = await DB.waitForAuth();
+    if (!user) {
+      showAdminLoading(false);
+      showLoginOverlay();
+      return;
+    }
     await applyAdminTheme();
     showSection('dashboard');
   } catch(e) {
@@ -877,7 +925,6 @@ async function saveSettings() {
     additionalDeliveryFee: parseInt(document.getElementById('sAdditionalDelivery')?.value)||0,
     minOrder:     parseInt(document.getElementById('sMinOrder').value)||15000,
     greeting:     document.getElementById('sGreeting').value.trim(),
-    adminPass:    document.getElementById('sAdminPass').value.trim()||'admin123',
     logoEmoji:    document.getElementById('sLogoEmoji').value.trim()||'🍌',
     logoUrl:      document.getElementById('sLogoUrl').value,
     isOpen:       document.getElementById('sIsOpenVal').value === '1',
