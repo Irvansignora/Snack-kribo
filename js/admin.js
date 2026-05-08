@@ -44,12 +44,15 @@ function showLoginOverlay() {
           autocomplete="current-password"/>
       </div>
       <div id="adminLoginError" style="display:none;color:#c0392b;font-size:0.82rem;margin-bottom:12px;text-align:center;background:#ffeaea;padding:8px;border-radius:6px"></div>
-      <button id="adminLoginBtn" onclick="doAdminLogin()"
+      <button id="adminLoginBtn"
         style="width:100%;padding:12px;background:#E91E8C;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer">
         Masuk
       </button>
     </div>`;
   document.body.appendChild(overlay);
+
+  // Fix: gunakan addEventListener agar doAdminLogin terbaca dari ES module scope
+  document.getElementById('adminLoginBtn').addEventListener('click', doAdminLogin);
 
   // Enter key support
   overlay.querySelectorAll('input').forEach(inp => {
