@@ -77,8 +77,14 @@ window.doAdminLogin = async function doAdminLogin() {
     showSection('dashboard');
     showAdminLoading(false);
   } catch(e) {
-    const msg = e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found'
-      ? 'Email atau password salah' : 'Gagal login. Cek koneksi internet.';
+    const authErrors = ['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-email'];
+    const msg = authErrors.includes(e.code)
+      ? 'Email atau password salah'
+      : e.code === 'auth/too-many-requests'
+      ? 'Terlalu banyak percobaan. Coba lagi nanti.'
+      : e.code === 'auth/network-request-failed'
+      ? 'Gagal login. Cek koneksi internet.'
+      : 'Gagal login: ' + (e.message || e.code || 'Unknown error');
     errEl.textContent = msg; errEl.style.display = 'block';
     btn.disabled = false; btn.textContent = 'Masuk';
   }
