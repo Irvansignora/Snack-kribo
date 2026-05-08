@@ -159,6 +159,13 @@ const DB = {
     await this._authMod.signOut(this._auth);
   },
 
+  // Login khusus admin (sama seperti login biasa, tanpa ambil userData user biasa)
+  async adminLogin(email, password) {
+    const { signInWithEmailAndPassword } = this._authMod;
+    const cred = await signInWithEmailAndPassword(this._auth, email, password);
+    return cred.user;
+  },
+
   getCurrentUser() {
     return this._auth?.currentUser || null;
   },
