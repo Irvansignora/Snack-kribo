@@ -5,17 +5,41 @@
 let currentSection = 'dashboard';
 const ADMIN_PASS_KEY = 'kribo_admin_auth';
 
+// ---- SECURITY: escape user input before inserting into innerHTML ----
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ---- SECURITY: strengthened checkAuth with signed token (anti DevTools bypass) ----
 async function checkAuth() {
-  const ok = sessionStorage.getItem(ADMIN_PASS_KEY);
-  if (!ok) {
-    const pw = prompt('🔐 Masukkan password admin:');
-    const s  = await DB.getSettings();
-    if (pw !== (s.adminPass || 'admin123')) {
-      alert('Password salah!'); window.location.href = '/'; return false;
-    }
-    sessionStorage.setItem(ADMIN_PASS_KEY, '1');
+  const stored = sessionStorage.getItem(ADMIN_PASS_KEY);
+  if (stored) {
+    // Validate stored token is a proper signed hash, not just '1'
+    const s = await DB.getSettings();
+    const expected = await _hashPass(s.adminPass || 'admin123');
+    if (stored === expected) return true;
+    sessionStorage.removeItem(ADMIN_PASS_KEY); // clear tampered/old value
   }
+  const pw = prompt('🔐 Masukkan password admin:');
+  if (!pw) { window.location.href = '/'; return false; }
+  const s = await DB.getSettings();
+  if (pw !== (s.adminPass || 'admin123')) {
+    alert('Password salah!'); window.location.href = '/'; return false;
+  }
+  const token = await _hashPass(pw);
+  sessionStorage.setItem(ADMIN_PASS_KEY, token);
   return true;
+}
+
+async function _hashPass(pass) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('kribo_salt_' + pass));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
 async function initAdmin() {
@@ -177,7 +201,7 @@ async function renderDashboard() {
     tbody.innerHTML = orders.slice(0,8).map(o => `
       <tr>
         <td><strong>${o.id}</strong></td>
-        <td>${o.customer.name}</td>
+        <td>${esc(o.customer.name)}</td>
         <td>${DB.formatRupiah(o.total)}</td>
         <td><span class="badge badge-${o.status}">${statusLabel[o.status]||o.status}</span></td>
         <td>${DB.formatDate(o.createdAt)}</td>
@@ -439,7 +463,7 @@ async function renderOrders() {
     tbody.innerHTML = orders.map(o => `
       <tr>
         <td><strong style="font-size:0.78rem">${o.id}</strong></td>
-        <td><strong>${o.customer.name}</strong><br><span style="font-size:0.72rem;color:var(--text3)">${o.customer.address}</span></td>
+        <td><strong>${esc(o.customer.name)}</strong><br><span style="font-size:0.72rem;color:var(--text3)">${esc(o.customer.address)}</span></td>
         <td style="max-width:140px"><span style="font-size:0.75rem">${o.items.map(i=>`${i.emoji}${i.name}×${i.qty}`).join(', ')}</span></td>
         <td><strong>${DB.formatRupiah(o.total)}</strong></td>
         <td><span style="font-size:0.72rem;color:var(--text3)">${o.affiliateCode||'-'}</span></td>
@@ -550,9 +574,9 @@ async function printInvoice() {
       </div>
       <div class="divider"></div>
       <div>
-        <div class="bold">Yth. ${o.customer.name}</div>
-        <div>${o.customer.address}</div>
-        ${o.customer.note ? `<div><i>Catatan: ${o.customer.note}</i></div>` : ''}
+        <div class="bold">Yth. ${esc(o.customer.name)}</div>
+        <div>${esc(o.customer.address)}</div>
+        ${o.customer.note ? `<div><i>Catatan: ${esc(o.customer.note)}</i></div>` : ''}
       </div>
       <div class="divider"></div>
       <div>
