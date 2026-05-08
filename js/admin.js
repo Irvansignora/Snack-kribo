@@ -29,7 +29,7 @@ function showLoginOverlay() {
       <div style="text-align:center;margin-bottom:24px">
         <div style="font-size:2rem;margin-bottom:8px">🔐</div>
         <div style="font-weight:800;font-size:1.2rem;color:#1a1a2e">Admin Login</div>
-        <div style="font-size:0.82rem;color:#888;margin-top:4px">Masuk dengan akun admin Firebase kamu</div>
+        <div style="font-size:0.82rem;color:#888;margin-top:4px">Silahkan Login</div>
       </div>
       <div style="margin-bottom:14px">
         <label style="font-size:0.82rem;font-weight:600;color:#444;display:block;margin-bottom:6px">Email</label>
@@ -58,7 +58,7 @@ function showLoginOverlay() {
   setTimeout(() => document.getElementById('adminEmailInput')?.focus(), 100);
 }
 
-async function doAdminLogin() {
+window.doAdminLogin = async function doAdminLogin() {
   const email = document.getElementById('adminEmailInput')?.value?.trim();
   const pass  = document.getElementById('adminPassInput')?.value;
   const errEl = document.getElementById('adminLoginError');
@@ -81,7 +81,7 @@ async function doAdminLogin() {
   }
 }
 
-async function adminLogout() {
+window.adminLogout = async function adminLogout() {
   if (!confirm('Yakin ingin keluar?')) return;
   await DB.logout();
   window.location.reload();
