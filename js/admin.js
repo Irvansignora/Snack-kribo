@@ -16,24 +16,26 @@ function esc(str) {
     .replace(/'/g, '&#39;');
 }
 
-// ---- SECURITY: strengthened checkAuth with signed token (anti DevTools bypass) ----
+// ---- SECURITY: checkAuth — validasi password + simpan hash di sessionStorage ----
 async function checkAuth() {
+  // DB.init() sudah selesai sebelum fungsi ini dipanggil (lihat initAdmin)
+  const s = await DB.getSettings();
+  const correctPass = s.adminPass || 'admin123';
   const stored = sessionStorage.getItem(ADMIN_PASS_KEY);
+
   if (stored) {
-    // Validate stored token is a proper signed hash, not just '1'
-    const s = await DB.getSettings();
-    const expected = await _hashPass(s.adminPass || 'admin123');
+    // Validasi hash yang tersimpan agar tidak bisa di-bypass manual via DevTools
+    const expected = await _hashPass(correctPass);
     if (stored === expected) return true;
-    sessionStorage.removeItem(ADMIN_PASS_KEY); // clear tampered/old value
+    sessionStorage.removeItem(ADMIN_PASS_KEY); // hapus token palsu/lama
   }
+
   const pw = prompt('🔐 Masukkan password admin:');
   if (!pw) { window.location.href = '/'; return false; }
-  const s = await DB.getSettings();
-  if (pw !== (s.adminPass || 'admin123')) {
+  if (pw !== correctPass) {
     alert('Password salah!'); window.location.href = '/'; return false;
   }
-  const token = await _hashPass(pw);
-  sessionStorage.setItem(ADMIN_PASS_KEY, token);
+  sessionStorage.setItem(ADMIN_PASS_KEY, await _hashPass(pw));
   return true;
 }
 
