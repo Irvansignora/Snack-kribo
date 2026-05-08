@@ -159,18 +159,11 @@ const DB = {
     await this._authMod.signOut(this._auth);
   },
 
-  // Admin login via Firebase Auth (proper auth - tidak bisa di-bypass DevTools)
-  async adminLogin(email, password) {
-    const { signInWithEmailAndPassword } = this._authMod;
-    const cred = await signInWithEmailAndPassword(this._auth, email, password);
-    return cred.user;
-  },
-
   getCurrentUser() {
     return this._auth?.currentUser || null;
   },
 
-  // Wait for Firebase Auth to resolve current session before proceeding
+  // Tunggu Firebase Auth resolve session sebelum lanjut
   waitForAuth() {
     return new Promise(resolve => {
       const unsub = this._authMod.onAuthStateChanged(this._auth, user => {
