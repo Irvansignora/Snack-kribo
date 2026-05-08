@@ -424,10 +424,9 @@ async function submitOrder() {
   try {
     await DB.saveOrder(order);
     
-    // Record affiliate sale if applicable
-    if (refCode) {
-      try { await DB.recordAffiliateSale(refCode, total); } catch(e) { console.warn('Affiliate tracking error:', e); }
-    }
+    // Affiliate commission is NOT recorded here.
+    // It will only be counted when admin marks the order as DONE (status = 'done').
+    // If order is cancelled, no commission is added.
 
     const myOrders = JSON.parse(localStorage.getItem('kribo_my_orders') || '[]');
     if (!myOrders.includes(order.id)) myOrders.push(order.id);
