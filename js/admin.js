@@ -249,6 +249,17 @@ async function openProductModal(id = null) {
   document.getElementById('pEmojiVal').value = p.emoji || '🍱';
   document.getElementById('pImageUrl').value = p.imageUrl || '';
   renderImagePreview(p.imageUrl);
+  const badgeSelect = document.getElementById('pLandingBadge');
+  if (badgeSelect) {
+    // If landingBadge not in options, add it
+    const existingOpt = Array.from(badgeSelect.options).find(o => o.value === (p.landingBadge || ''));
+    if (!existingOpt && p.landingBadge) {
+      const opt = document.createElement('option');
+      opt.value = p.landingBadge; opt.textContent = p.landingBadge;
+      badgeSelect.appendChild(opt);
+    }
+    badgeSelect.value = p.landingBadge || '';
+  }
   document.getElementById('pActive').className = 'toggle' + (p.active?' on':'');
   document.getElementById('pActiveVal').value  = p.active ? '1' : '0';
   document.getElementById('pStock').className  = 'toggle' + (p.stock?' on':'');
@@ -317,7 +328,8 @@ async function saveProduct() {
   btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
   try {
     const id = editingProductId || DB.genId();
-    const productData = { id, categoryId:catId, name, desc, price, emoji, imageUrl, active, stock };
+    const landingBadge = document.getElementById('pLandingBadge')?.value || '';
+  const productData = { id, categoryId:catId, name, desc, price, emoji, imageUrl, active, stock, landingBadge };
     if (resellerPrice) { productData.resellerPrice = resellerPrice; productData.resellerMinQty = resellerMinQty; }
     else { productData.resellerPrice = null; productData.resellerMinQty = null; }
     await DB.saveProduct(productData);
