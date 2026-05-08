@@ -91,8 +91,10 @@ async function initAdmin() {
   showAdminLoading(true);
   try {
     await DB.init();
-    // Tunggu Firebase Auth resolve session (penting! getCurrentUser() null sebelum ini)
-    const user = await DB.waitForAuth();
+    // Tunggu Firebase Auth resolve session secara inline (tanpa butuh fungsi tambahan di data.js)
+    const user = await new Promise(resolve => {
+      const unsub = DB._authMod.onAuthStateChanged(DB._auth, u => { unsub(); resolve(u); });
+    });
     if (!user) {
       showAdminLoading(false);
       showLoginOverlay();
