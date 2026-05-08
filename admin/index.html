@@ -16,6 +16,7 @@
   <div class="sidebar-logo">
     <h1 id="adminStoreName">⚙️ Snack Kribo</h1>
     <p>Panel Admin</p>
+    <button onclick="adminLogout()" style="margin-top:8px;width:100%;padding:5px 8px;background:transparent;border:1px solid rgba(255,255,255,0.25);border-radius:6px;color:rgba(255,255,255,0.65);font-size:0.73rem;cursor:pointer;letter-spacing:0.02em">🚪 Keluar</button>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-title">Utama</div>
@@ -328,7 +329,7 @@
     <div class="section-card">
       <div class="section-card-header"><h2>🔐 Keamanan</h2></div>
       <div class="section-card-body">
-        <div class="form-group" style="max-width:280px"><label class="form-label">Password Admin</label><input class="form-control" id="sAdminPass" type="text" placeholder="admin123"/></div>
+        <!-- Password admin dikelola via Firebase Authentication Console -->
       </div>
     </div>
     <button class="btn btn-primary" style="width:100%;padding:14px;font-size:1rem;margin-bottom:18px" onclick="saveSettings()">💾 Simpan Semua Pengaturan</button>
@@ -491,3 +492,4 @@
 <script src="/js/admin.js" type="module"></script>
 </body>
 </html>
+
