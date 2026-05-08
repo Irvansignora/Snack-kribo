@@ -204,22 +204,6 @@ const DB = {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
-  async recordAffiliateSale(affiliateCode, orderTotal) {
-    const { collection, getDocs, query, where } = this._fs;
-    const q = query(collection(this._db, 'users'), where('affiliateCode', '==', affiliateCode));
-    const snap = await getDocs(q);
-    if (snap.empty) return;
-    const affDoc = snap.docs[0];
-    const affData = affDoc.data();
-    const settings = await this.getSettings();
-    const commission = Math.floor(orderTotal * (settings.affiliateCommission || 10) / 100);
-    await this._fs.updateDoc(this._fs.doc(this._db, 'users', affDoc.id), {
-      totalSales: (affData.totalSales || 0) + orderTotal,
-      totalCommission: (affData.totalCommission || 0) + commission,
-      pendingPayout: (affData.pendingPayout || 0) + commission,
-    });
-  },
-
   // ---- SETTINGS & LANDING ----
   async getSettings() {
     if (this._cache.settings) return this._cache.settings;
@@ -303,7 +287,66 @@ const DB = {
     return order;
   },
   async updateOrderStatus(id, status) {
+    // Get current order data first
+    const orderSnap = await this._fs.getDoc(this._fs.doc(this._db, 'orders', id));
+    if (!orderSnap.exists()) return;
+    const order = orderSnap.data();
+    const prevStatus = order.status;
+
+    // Save new status
     await this._fs.updateDoc(this._fs.doc(this._db, 'orders', id), { status, updatedAt: Date.now() });
+
+    // --- Affiliate commission logic ---
+    // Only process if order has an affiliate code
+    const affiliateCode = order.affiliateCode;
+    if (!affiliateCode) return;
+
+    const isDone   = status === 'done';
+    const isCancel = status === 'cancel';
+    const wasDone  = prevStatus === 'done';
+
+    // Case 1: Status changed TO 'done' → add commission
+    if (isDone && prevStatus !== 'done') {
+      try { await this.recordAffiliateSale(affiliateCode, order.total); } catch(e) { console.warn('Affiliate commission error:', e); }
+    }
+    // Case 2: Was 'done' but now changed to 'cancel' → deduct commission
+    else if (isCancel && wasDone) {
+      try { await this.revokeAffiliateSale(affiliateCode, order.total); } catch(e) { console.warn('Affiliate revoke error:', e); }
+    }
+  },
+
+  // Add commission when order is confirmed DONE
+  async recordAffiliateSale(affiliateCode, orderTotal) {
+    const { collection, getDocs, query, where } = this._fs;
+    const q = query(collection(this._db, 'users'), where('affiliateCode', '==', affiliateCode));
+    const snap = await getDocs(q);
+    if (snap.empty) return;
+    const affDoc = snap.docs[0];
+    const affData = affDoc.data();
+    const settings = await this.getSettings();
+    const commission = Math.floor(orderTotal * (settings.affiliateCommission || 10) / 100);
+    await this._fs.updateDoc(this._fs.doc(this._db, 'users', affDoc.id), {
+      totalSales: (affData.totalSales || 0) + orderTotal,
+      totalCommission: (affData.totalCommission || 0) + commission,
+      pendingPayout: (affData.pendingPayout || 0) + commission,
+    });
+  },
+
+  // Deduct commission if a previously-done order is cancelled
+  async revokeAffiliateSale(affiliateCode, orderTotal) {
+    const { collection, getDocs, query, where } = this._fs;
+    const q = query(collection(this._db, 'users'), where('affiliateCode', '==', affiliateCode));
+    const snap = await getDocs(q);
+    if (snap.empty) return;
+    const affDoc = snap.docs[0];
+    const affData = affDoc.data();
+    const settings = await this.getSettings();
+    const commission = Math.floor(orderTotal * (settings.affiliateCommission || 10) / 100);
+    await this._fs.updateDoc(this._fs.doc(this._db, 'users', affDoc.id), {
+      totalSales: Math.max(0, (affData.totalSales || 0) - orderTotal),
+      totalCommission: Math.max(0, (affData.totalCommission || 0) - commission),
+      pendingPayout: Math.max(0, (affData.pendingPayout || 0) - commission),
+    });
   },
 
   // Cart - localStorage
